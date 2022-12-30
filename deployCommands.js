@@ -2,7 +2,7 @@ const { REST, Routes } = require('discord.js');
 const { clientId, token } = require('./auth.json');
 const { getFilepaths } = require('./utils');
 const path = require('node:path');
-const guildId = '383889230704803851';
+const guildId = '383889230704803851'; // Arkchat guildId
 // does clientId need to be dynamic with sharding?
 
 const commandsPath = path.join(__dirname, 'commands');

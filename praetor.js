@@ -1,7 +1,7 @@
 const path = require('node:path');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const { token } = require('./auth.json');
-const { getFilepaths } = require('./utils');
+const { getFilepaths, logError } = require('./utils');
 
 const clientOptions = {
 	intents: [
@@ -35,25 +35,28 @@ client.commands = new Collection();
 // Set up commands
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = getFilepaths(commandsPath);
-for (const filePath of commandFiles) {
-	const command = require(filePath);
+for (const filepath of commandFiles) {
+	const command = require(filepath);
 	if ('data' in command && 'execute' in command) {
 		client.commands.set(command.data.name, command);
 	} else {
-		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		console.log(`[WARNING] The command at ${filepath} is missing a required "data" or "execute" property.`);
 	}
 }
 
 // Set up event listeners
 const eventsPath = path.join(__dirname, 'events');
 const eventsFiles = getFilepaths(eventsPath);
-for (const filePath of eventsFiles) {
-	const event = require(filePath);
+for (const filepath of eventsFiles) {
+	const event = require(filepath);
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
 	} else {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
+
+// default promise rejection handling
+process.on('unhandledRejection', (err, promise) => logError(client, err, promise));
 
 client.login(token);
