@@ -1,0 +1,36 @@
+{
+	"name": "praetor",
+	"version": "1.0.0",
+	"description": "A Discord bot to take on many responsibilities",
+	"main": "praetor.js",
+	"scripts": {
+		"restart": "pm2 restart praetor",
+		"stop": "pm2 delete praetor",
+		"start": "pm2 start praetor --time",
+		"dev": "pm2 start --watch --ignore-watch='node_modules' --watch='**/*.js' praetor --no-daemon",
+		"logs": "pm2 logs",
+		"deploy-guild": "node deployCommands.js",
+		"deploy-global": "node deployCommands.js -g"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ArkenStorm/Praetor.git"
+	},
+	"keywords": [
+		"discord",
+		"js",
+		"discordjs"
+	],
+	"author": "ArkenStorm",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/ArkenStorm/Praetor/issues"
+	},
+	"homepage": "https://github.com/ArkenStorm/Praetor#readme",
+	"dependencies": {
+		"discord.js": "^14.7.1"
+	},
+	"devDependencies": {
+		"eslint": "^8.30.0"
+	}
+}
