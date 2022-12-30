@@ -14,10 +14,10 @@ module.exports = {
 			} catch (error) {
 				// send to bot error channel
 				console.error(error);
-				await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
+				await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 			}
 		} else if (interaction.isAutocomplete()) {
 			// nothing yet
 		}
-	},
+	}
 };

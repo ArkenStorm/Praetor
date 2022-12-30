@@ -1,7 +1,7 @@
 const path = require('node:path');
-const { Client, Events, GatewayIntentBits, Partials, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const { token } = require('./auth.json');
-const { getFilePaths } = require('./utils');
+const { getFilepaths } = require('./utils');
 
 const clientOptions = {
 	intents: [
@@ -26,7 +26,7 @@ const clientOptions = {
 		GatewayIntentBits.AutoModerationExecution
 	],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction]
-}
+};
 
 const client = new Client(clientOptions);
 
@@ -34,7 +34,7 @@ client.commands = new Collection();
 
 // Set up commands
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = getFilePaths(commandsPath);
+const commandFiles = getFilepaths(commandsPath);
 for (const filePath of commandFiles) {
 	const command = require(filePath);
 	if ('data' in command && 'execute' in command) {
@@ -46,7 +46,7 @@ for (const filePath of commandFiles) {
 
 // Set up event listeners
 const eventsPath = path.join(__dirname, 'events');
-const eventsFiles = getFilePaths(eventsPath);
+const eventsFiles = getFilepaths(eventsPath);
 for (const filePath of eventsFiles) {
 	const event = require(filePath);
 	if (event.once) {
