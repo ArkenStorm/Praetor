@@ -118,7 +118,7 @@ const update = async (user, statString, updateVal) => {
 	if (updateVal === 0) {
 		return 'You need to provide a value other than zero.';
 	}
-	const statObj = await user.find({ statString });
+	const statObj = await user.find({ stat: statString });
 	await statObj.assign({ 'value': statObj.value().value + updateVal }).write();
 	return `\`${statString}\` has been updated.`;
 };
