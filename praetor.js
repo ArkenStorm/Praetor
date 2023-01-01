@@ -57,6 +57,6 @@ for (const filepath of eventsFiles) {
 }
 
 // default promise rejection handling
-process.on('unhandledRejection', (err, promise) => logError(client, err, promise));
+process.on('unhandledRejection', (err) => logError(client, err));
 
 client.login(token);

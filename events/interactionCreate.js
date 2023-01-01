@@ -1,23 +1,31 @@
 const { Events } = require('discord.js');
+const { logError } = require('../utils');
+
+const handleError = async (interaction, error, message = 'There was an error executing this command') => {
+	logError(interaction.client, error, interaction);
+	console.error(error);
+	await interaction.reply({ content: message, ephemeral: true });
+};
 
 module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
 		const command = interaction.client.commands.get(interaction.commandName);
 		if (!command) {
-			// send to bot error channel
-			console.error(`No command matching ${interaction.commandName} was found.`);
+			logError(interaction.client, `No command matching ${interaction.commandName} was found.`, interaction);
 		}
 		if (interaction.isChatInputCommand()) {
 			try {
 				await command.execute(interaction);
 			} catch (error) {
-				// send to bot error channel
-				console.error(error);
-				await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+				handleError(interaction, error);
 			}
 		} else if (interaction.isAutocomplete()) {
-			// nothing yet
+			try {
+				await command.autocomplete(interaction);
+			} catch (error) {
+				handleError(interaction, error);
+			}
 		}
 	}
 };

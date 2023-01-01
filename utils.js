@@ -17,28 +17,50 @@ const getFilepaths = dir => {
 };
 
 // general permission checking function
+// always allow my user id
 
-// error sending function
-const logError = (client, err, promise) => {
+const logError = (client, err, interaction) => {
 	console.error(err);
-	console.log(promise); // what details can I get here?
-	// send the error
+	const fields = [];
+
+	if (interaction) {
+		if (interaction.isCommand()) {
+			fields.push({ name: 'Command:', value: interaction.commandName });
+		}
+		fields.push(
+			{ name: 'Guilty User:', value: interaction.user },
+			{ name: 'Channel:', value: interaction.channel },
+			{ name: 'Guild:', value: interaction.guild || 'DM' },
+			{ name: 'Created At:', value: createTimecode(interaction.createdTimestamp, 'datetime') }
+		);
+	}
+	fields.push({ name: 'Error:', value: err.stack || err });
+
 	const errorEmbed = new EmbedBuilder()
 		.setColor('#bf260b')
 		.setTitle('Glitch in the Matrix')
-		.addFields(
-			{ name: 'Message:', value: 'Not implemented yet' },
-			{ name: 'Guilty User:', value: 'Not implemented yet' },
-			{ name: 'Channel:', value: 'Not implemented yet' },
-			{ name: 'Guild:', value: 'Not implemented yet' },
-			{ name: 'Error:', value: err.stack || err }
-		);
+		.addFields(fields);
 
-	const errorChannel = client.guilds.cache.get('383889230704803851');
-	errorChannel.send(errorEmbed);
+	// create abstracted function for getting channels (and other things), including error handling with partials and fetching and stuff?
+	const errorChannel = client.guilds.cache.get('383889230704803851').channels.cache.get('1058289461357727785');
+	errorChannel.send({ embeds: [errorEmbed] });
 };
+
+// function to create a timecode
+const timecodeFormats = {
+	'date': 'd',
+	'longdate': 'D',
+	'time': 't',
+	'longtime': 'T', // with seconds
+	'datetime': 'f',
+	'longdatetime': 'F',
+	'dynamic': 'R'
+};
+
+const createTimecode = (timestamp, format) => `<t:${timestamp}:${timecodeFormats[format]}>`;
 
 module.exports = {
 	getFilepaths,
-	logError
+	logError,
+	createTimecode
 };
