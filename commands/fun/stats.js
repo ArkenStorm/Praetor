@@ -97,7 +97,7 @@ const executeIfStatExists = async (interaction) => {
 		if (trackedStat.value()) {
 			message = subcommand === 'untrack' ?
 				await untrack(user, stat) :
-				await update(user, stat, interaction.options.getNumber('value'));
+				await update(user, stat, interaction.options?.getNumber('value') || 0);
 		} else {
 			message = `I'm not currently tracking \`${stat}\` for you.`;
 		}
@@ -114,6 +114,9 @@ const untrack = async (user, stat) => {
 };
 
 const update = async (user, statString, updateVal) => {
+	if (updateVal === 0) {
+		return 'You need to provide a value other than zero.';
+	}
 	const statObj = await user.find({ statString });
 	await statObj.assign({ 'value': statObj.value().value + updateVal }).write();
 	return `\`${statString}\` has been updated.`;
