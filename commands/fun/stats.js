@@ -62,21 +62,19 @@ const track = async (interaction) => {
 	const stat = interaction.options.getString('stat');
 	const value = interaction.options.getNumber('value');
 
-	const trackedUser = await interaction.client.db.get(`statistics[${interaction.user.id}]`);
-	if (!trackedUser) {
-		await interaction.client.db.get('statistics')
-			.push({ [interaction.user.id]: [] })
-			.write();
+	const trackedUser = await getUser(interaction);
+	if (!trackedUser.value()) {
+		await interaction.client.db.set(`statistics[${interaction.user.id}]`, []).write();
 	}
 
-	const user = getUser(interaction);
-	const statIsTracked = await user.find({ stat });
+	const user = await getUser(interaction);
+	const statIsTracked = await user.find({ stat }).value();
 	let message;
 
 	if (statIsTracked) {
 		message = 'I\'m already tracking that statistic for you.';
 	} else {
-		await user.push({ stat, value: value || 0 });
+		await user.push({ stat, value: value || 0 }).write();
 		message = `Now tracking \`${stat}\` for you.`;
 	}
 
@@ -89,7 +87,7 @@ const zeroTrackingMessage = 'I\'m not currently tracking anything for you. If yo
 // Executes a predetermined function if the given stat exists in the DB
 const executeIfStatExists = async (interaction) => {
 	const stat = interaction.options.getString('stat');
-	const user = getUser(interaction);
+	const user = await getUser(interaction);
 	const subcommand = interaction.options.getSubcommand();
 
 	if (user) {
@@ -98,8 +96,8 @@ const executeIfStatExists = async (interaction) => {
 
 		if (trackedStat.value()) {
 			message = subcommand === 'untrack' ?
-				untrack(user, stat) :
-				update(user, stat, interaction.getNumber('value'));
+				await untrack(user, stat) :
+				await update(user, stat, interaction.getNumber('value'));
 		} else {
 			message = `I'm not currently tracking \`${stat}\` for you.`;
 		}
@@ -122,12 +120,11 @@ const update = async (user, statString, updateVal) => {
 };
 
 const view = async (interaction) => {
-	const user = getUser(interaction);
+	const user = await getUser(interaction);
 
-	if (user && user.value().length) {
-		const title = `${interaction?.member.displayName} statistics`;
-		const fields = [];
-		user.value().map(entry => ({ name: entry.stat, value: entry.value }));
+	if (user?.value()?.length) {
+		const title = interaction.channel.isDMBased() ? 'Your statistics' : `${interaction?.member.displayName}'s statistics`;
+		const fields = user.value().map(entry => ({ name: entry.stat, value: entry.value.toString() }));
 		fields.sort((a, b) => a.name.localeCompare(b.name));
 
 		const statsEmbed = new EmbedBuilder()
@@ -135,11 +132,11 @@ const view = async (interaction) => {
 			.setTitle(title)
 			.addFields(fields);
 
-		if (interaction.getBoolean('private')) {
-			await interaction.editReply({ embeds: statsEmbed });
+		if (interaction.options.getBoolean('private')) {
+			await interaction.editReply({ embeds: [statsEmbed] });
 		} else {
 			await interaction.editReply('Stats sending...');
-			await interaction.channel.send({ embeds: statsEmbed });
+			await interaction.channel.send({ embeds: [statsEmbed] });
 			await interaction.editReply('Stats sent!');
 		}
 	} else {
@@ -177,7 +174,7 @@ const leaderboard = async (interaction) => {
 		.addFields(fields)
 		.setFooter(`Requested by ${interaction.member.displayName}`);
 
-	await interaction.channel.send({ embeds: leaderboardEmbed });
+	await interaction.channel.send({ embeds: [leaderboardEmbed] });
 	await interaction.editReply('Leaderboard posted!');
 };
 
@@ -197,12 +194,12 @@ const execute = async interaction => {
 const autocomplete = async interaction => {
 	// Only the "stat" option is autocomplete-enabled for the stats commands
 	const focusedValue = interaction.options.getFocused();
-	const user = getUser(interaction);
+	const user = await getUser(interaction);
 	let choices = [];
 	if (user) {
 		choices = user.value().map(entry => ({ name: entry.stat, value: entry.stat }));
 	}
-	const filtered = choices.filter(c => c.stat.startsWith(focusedValue));
+	const filtered = choices.filter(c => c.name.startsWith(focusedValue));
 	await interaction.respond(filtered);
 };
 

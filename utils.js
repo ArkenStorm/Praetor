@@ -28,9 +28,9 @@ const logError = (client, err, interaction) => {
 			fields.push({ name: 'Command:', value: interaction.commandName });
 		}
 		fields.push(
-			{ name: 'Guilty User:', value: interaction.user },
-			{ name: 'Channel:', value: interaction.channel },
-			{ name: 'Guild:', value: interaction.guild || 'DM' },
+			{ name: 'Guilty User:', value: interaction.member?.displayName || interaction.user.username },
+			{ name: 'Channel:', value: interaction.channel.name },
+			{ name: 'Guild:', value: interaction.guild.name || 'DM' },
 			{ name: 'Created At:', value: createTimecode(interaction.createdTimestamp, 'datetime') }
 		);
 	}

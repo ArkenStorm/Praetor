@@ -4,7 +4,9 @@ const { logError } = require('../utils');
 const handleError = async (interaction, error, message = 'There was an error executing this command') => {
 	logError(interaction.client, error, interaction);
 	console.error(error);
-	await interaction.reply({ content: message, ephemeral: true });
+	if (interaction.isRepliable()) {
+		await interaction.reply({ content: message, ephemeral: true });
+	}
 };
 
 module.exports = {
