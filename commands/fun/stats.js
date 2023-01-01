@@ -38,6 +38,7 @@ const data = new SlashCommandBuilder()
 			.addNumberOption(option =>
 				option.setName('value')
 					.setDescription('Alter the statistic value by this number')
+					.setRequired(true)
 			)
 	)
 	.addSubcommand(subcommand =>
@@ -97,7 +98,7 @@ const executeIfStatExists = async (interaction) => {
 		if (trackedStat.value()) {
 			message = subcommand === 'untrack' ?
 				await untrack(user, stat) :
-				await update(user, stat, interaction.options?.getNumber('value') || 0);
+				await update(user, stat, interaction.options.getNumber('value'));
 		} else {
 			message = `I'm not currently tracking \`${stat}\` for you.`;
 		}
