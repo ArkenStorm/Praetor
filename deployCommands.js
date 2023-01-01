@@ -11,6 +11,7 @@ const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = getFilepaths(commandsPath);
 const allCommands = commandFiles.map(filepath => require(filepath).data.toJSON());
 /**
+ * TODO: create a "getCommands" function and do some better logic. Also allow deploying of specific commands for a guild
  * Example commands:
  * 	1) command: node deployCommands.js
  * 		effect: deploys all commands to the Arkchat guild, for testing

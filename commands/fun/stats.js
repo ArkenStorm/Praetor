@@ -97,7 +97,7 @@ const executeIfStatExists = async (interaction) => {
 		if (trackedStat.value()) {
 			message = subcommand === 'untrack' ?
 				await untrack(user, stat) :
-				await update(user, stat, interaction.getNumber('value'));
+				await update(user, stat, interaction.options.getNumber('value'));
 		} else {
 			message = `I'm not currently tracking \`${stat}\` for you.`;
 		}
@@ -163,6 +163,7 @@ const leaderboard = async (interaction) => {
 				value: userStat.value
 			});
 		}
+		return acc;
 	}, []);
 
 	competingUsers.sort((a, b) => a.value - b.value);

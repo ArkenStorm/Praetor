@@ -1,5 +1,6 @@
 const { Events } = require('discord.js');
 const { startDatabase } = require('../database/db');
+const { logMessage } = require('../utils');
 
 module.exports = {
 	name: Events.ClientReady,
@@ -9,6 +10,7 @@ module.exports = {
 		startDatabase('./database/db.json').then(db => {
 			client.db = db;
 			console.log('All systems go.');
+			logMessage(client, 'Praetor is online.');
 		});
 	}
 };

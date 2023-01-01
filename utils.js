@@ -46,6 +46,17 @@ const logError = (client, err, interaction) => {
 	errorChannel.send({ embeds: [errorEmbed] });
 };
 
+const logMessage = async (client, message) => {
+	const messageEmbed = new EmbedBuilder()
+		.setColor('#19a83f')
+		.setTitle('System Notification')
+		.addFields({ name: 'Info:', value: message });
+
+	// create abstracted function for getting channels (and other things), including error handling with partials and fetching and stuff?
+	const errorChannel = client.guilds.cache.get('383889230704803851').channels.cache.get('1058289461357727785');
+	errorChannel.send({ embeds: [messageEmbed] });
+};
+
 // function to create a timecode
 const timecodeFormats = {
 	'date': 'd',
@@ -57,10 +68,11 @@ const timecodeFormats = {
 	'dynamic': 'R'
 };
 
-const createTimecode = (timestamp, format) => `<t:${timestamp}:${timecodeFormats[format]}>`;
+const createTimecode = (timestamp, format) => `<t:${timestamp / 1000}:${timecodeFormats[format]}>`;
 
 module.exports = {
 	getFilepaths,
 	logError,
+	logMessage,
 	createTimecode
 };
