@@ -155,12 +155,12 @@ const leaderboard = async (interaction) => {
 	const trackedUserIdsObj = await interaction.client.db.get('statistics').value();
 	const allTrackedUserIds = Object.keys(trackedUserIdsObj).map(key => ({ id: key, stats: trackedUserIdsObj[key] }));
 	const guildTrackedUserIds = allTrackedUserIds.filter(u => interaction.guild.members.cache.has(u.id));
-	const competingUsers = guildTrackedUserIds.reduce((acc, u) => {
+	const competingUsers = await guildTrackedUserIds.reduce(async (acc, u) => {
 		const userStat = u.stats.find(entry => entry.stat === stat);
 		if (userStat) {
 			acc.push({
-				name: interaction.guild.members.cache.get(u.id).displayName,
-				value: userStat.value
+				name: await interaction.guild.members.cache.get(u.id).displayName,
+				value: userStat.value.toString()
 			});
 		}
 		return acc;
@@ -173,7 +173,7 @@ const leaderboard = async (interaction) => {
 		.setColor('#2295d4')
 		.setTitle(`Leaderboard for ${stat}`)
 		.addFields(fields)
-		.setFooter(`Requested by ${interaction.member.displayName}`);
+		.setFooter({ text: `Requested by ${interaction.member.displayName}`, iconURL: interaction.member.displayAvatarURL() });
 
 	await interaction.channel.send({ embeds: [leaderboardEmbed] });
 	await interaction.editReply('Leaderboard posted!');
