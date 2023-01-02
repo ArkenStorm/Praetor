@@ -162,8 +162,9 @@ const leaderboard = async (interaction) => {
 	const competingUsers = await guildTrackedUserIds.reduce(async (acc, u) => {
 		const userStat = u.stats.find(entry => entry.stat.toLowerCase() === stat);
 		if (userStat) {
+			const displayName = (await interaction.guild.members.cache.get(u.id))?.displayName;
 			acc.push({
-				name: await interaction.guild.members.cache.get(u.id).displayName,
+				name: displayName,
 				value: userStat.value.toString()
 			});
 		}
