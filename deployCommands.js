@@ -23,7 +23,7 @@ const getCommandDetails = () => {
 		const commandFiles = getFilepaths(baseCommandPath);
 		const filteredCommands = commandFiles.reduce((acc, filepath) => {
 			const command = require(filepath);
-			if (!deployGlobally) {
+			if (!deployGlobally && !command.global) {
 				acc.push(command.data.toJSON());
 			} else if (command.global) {
 				acc.push(command.data.toJSON());

@@ -154,13 +154,13 @@ const leaderboard = async (interaction) => {
 		return;
 	}
 	await interaction.editReply('Determining Leaderboard...');
-	const stat = interaction.options.getString('stat');
+	const stat = interaction.options.getString('stat').toLowerCase();
 
 	const trackedUserIdsObj = await interaction.client.db.get('statistics').value();
 	const allTrackedUserIds = Object.keys(trackedUserIdsObj).map(key => ({ id: key, stats: trackedUserIdsObj[key] }));
 	const guildTrackedUserIds = allTrackedUserIds.filter(u => interaction.guild.members.cache.has(u.id));
 	const competingUsers = await guildTrackedUserIds.reduce(async (acc, u) => {
-		const userStat = u.stats.find(entry => entry.stat === stat);
+		const userStat = u.stats.find(entry => entry.stat.toLowerCase() === stat);
 		if (userStat) {
 			acc.push({
 				name: await interaction.guild.members.cache.get(u.id).displayName,
