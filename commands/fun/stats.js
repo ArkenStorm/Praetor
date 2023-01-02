@@ -163,7 +163,7 @@ const leaderboard = async (interaction) => {
 		const userStat = u.stats.find(entry => entry.stat.toLowerCase() === stat);
 		if (userStat) {
 			const displayName = (await interaction.guild.members.cache.get(u.id))?.displayName;
-			acc.push({
+			(await acc).push({
 				name: displayName,
 				value: userStat.value.toString()
 			});
