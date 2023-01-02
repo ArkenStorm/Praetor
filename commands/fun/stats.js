@@ -211,5 +211,6 @@ const autocomplete = async interaction => {
 module.exports = {
 	data,
 	execute,
-	autocomplete
+	autocomplete,
+	global: true
 };

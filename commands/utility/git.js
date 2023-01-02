@@ -25,5 +25,6 @@ module.exports = {
 					logError(interaction.client, error, interaction);
 				}
 			});
-	}
+	},
+	global: true
 };
