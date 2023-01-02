@@ -171,7 +171,7 @@ const leaderboard = async (interaction) => {
 		return acc;
 	}, []);
 
-	competingUsers.sort((a, b) => a.value - b.value);
+	competingUsers.sort((a, b) => b.value - a.value);
 	const fields = competingUsers.length ? competingUsers : [{ name: `Nobody is tracking \`${stat}\` yet!`, value: 'Maybe you can be the first...' }];
 
 	const leaderboardEmbed = new EmbedBuilder()
