@@ -69,7 +69,7 @@ const track = async (interaction) => {
 	}
 
 	const user = await getUser(interaction);
-	const statIsTracked = await user.find({ stat }).value();
+	const statIsTracked = await user.find(s => s.stat.toLowerCase() === stat.toLowerCase()).value();
 	let message;
 
 	if (statIsTracked) {
@@ -199,13 +199,13 @@ const execute = async interaction => {
 
 const autocomplete = async interaction => {
 	// Only the "stat" option is autocomplete-enabled for the stats commands
-	const focusedValue = interaction.options.getFocused();
+	const focusedValue = interaction.options.getFocused().toLowerCase();
 	const user = await getUser(interaction);
 	let choices = [];
 	if (user) {
 		choices = user.value().map(entry => ({ name: entry.stat, value: entry.stat }));
 	}
-	const filtered = choices.filter(c => c.name.startsWith(focusedValue));
+	const filtered = choices.filter(c => c.name.toLowerCase().startsWith(focusedValue));
 	await interaction.respond(filtered);
 };
 
