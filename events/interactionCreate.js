@@ -16,18 +16,16 @@ module.exports = {
 		if (!command) {
 			logError(interaction.client, `No command matching ${interaction.commandName} was found.`, interaction);
 		}
-		if (interaction.isChatInputCommand()) {
-			try {
+		try {
+			if (interaction.isChatInputCommand()) {
 				await command.execute(interaction);
-			} catch (error) {
-				handleError(interaction, error);
-			}
-		} else if (interaction.isAutocomplete()) {
-			try {
+			} else if (interaction.isAutocomplete()) {
 				await command.autocomplete(interaction);
-			} catch (error) {
-				handleError(interaction, error);
+			} else if (interaction.isStringSelectMenu()) {
+				await interaction.update(`selected values: ${interaction.values.join(', ')}`);
 			}
+		} catch (error) {
+			handleError(interaction, error);
 		}
 	}
 };
