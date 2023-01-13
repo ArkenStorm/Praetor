@@ -30,9 +30,8 @@ const getCommandDetails = async () => {
 			console.log('That server does not have a configuration set up. You must initialize the configuration and choose which commands to use in that guild.');
 			return ({ route: null, commands: null });
 		}
-		// guild.config.enabledCommands
 		commandFiles.reduce((acc, fp) => {
-			const commandName = fp.split('/').slice(0, -2);
+			const commandName = fp.split('/').at(-1).slice(0, -3);
 			const command = require(fp);
 			if (guild.config.enabledCommands.includes(commandName)) {
 				acc.push(command.data.toJSON());
