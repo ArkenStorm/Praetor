@@ -1,4 +1,5 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { getUser } = require('../../utils');
 
 const data = new SlashCommandBuilder()
 	.setName('stats')
@@ -82,7 +83,6 @@ const track = async (interaction) => {
 	await interaction.editReply({ content: message });
 };
 
-const getUser = async (interaction) => await interaction.client.db.get(`statistics[${interaction.user.id}]`);
 const zeroTrackingMessage = 'I\'m not currently tracking anything for you. If you\'d like to change that, try `/stats track`.';
 
 // Executes a predetermined function if the given stat exists in the DB

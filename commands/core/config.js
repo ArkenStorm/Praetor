@@ -17,9 +17,33 @@ const data = new SlashCommandBuilder()
 			.setDescription('Edit your server\'s config')
 	);
 
-const execute = async interaction => {
-	await interaction.reply({ content: 'Hello', ephemeral: true });
+const init = async () => {
+	// stuff
 };
+
+const subcommandFunctions = {
+	init
+};
+
+const execute = async interaction => {
+	await interaction.deferReply({ ephemeral: true });
+	subcommandFunctions[interaction.options.getSubcommand()](interaction);
+};
+/**
+ * 	config = {
+ * 		channels: {
+ * 			quoteChannelId
+ * 			starChannelId
+ * 		},
+ * 		embedColors: {
+ * 			default
+ * 			star
+ * 		},
+ * 		commands: []
+ * 		functionality: [starboard, autoreaction]
+ * 		starEmoji
+ * 	}
+ */
 
 module.exports = {
 	data,
