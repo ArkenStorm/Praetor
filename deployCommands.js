@@ -25,15 +25,15 @@ const getCommandDetails = async () => {
 			flagIndex = cliArgs.indexOf('--guild');
 		}
 		guildId = cliArgs[flagIndex + 1];
-		const guild = await db.get(`guilds[${guildId}]`).value();
-		if (!guild?.config) {
-			console.log('That server does not have a configuration set up. You must initialize the configuration and choose which commands to use in that guild.');
+		const guildConfig = await db.get(`guilds[${guildId}]`).value();
+		if (!guildConfig) {
+			console.log('That server does not have a configuration set up. You must initialize the configuration and choose which commands to use in that server.');
 			return ({ route: null, commands: null });
 		}
 		commandFiles.reduce((acc, fp) => {
 			const commandName = fp.split('/').at(-1).slice(0, -3);
 			const command = require(fp);
-			if (guild.config.enabledCommands.includes(commandName)) {
+			if (guildConfig.enabledCommands.includes(commandName)) {
 				acc.push(command.data.toJSON());
 			}
 			return acc;

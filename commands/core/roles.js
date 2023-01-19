@@ -26,6 +26,10 @@ const execute = async interaction => {
 	await interaction.reply({ content: 'Hello', ephemeral: true });
 };
 
+const configOptions = {
+	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, setc.>, validation: <func> }
+}
+
 module.exports = {
 	data,
 	execute
