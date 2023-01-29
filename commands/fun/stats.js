@@ -60,7 +60,7 @@ const data = new SlashCommandBuilder()
 			)
 	);
 
-const track = async (interaction) => {
+const track = async interaction => {
 	const stat = interaction.options.getString('stat');
 	const value = interaction.options.getNumber('value');
 
@@ -86,7 +86,7 @@ const track = async (interaction) => {
 const zeroTrackingMessage = 'I\'m not currently tracking anything for you. If you\'d like to change that, try `/stats track`.';
 
 // Executes a predetermined function if the given stat exists in the DB
-const executeIfStatExists = async (interaction) => {
+const executeIfStatExists = async interaction => {
 	const stat = interaction.options.getString('stat');
 	const user = await getUser(interaction);
 	const subcommand = interaction.options.getSubcommand();
@@ -123,7 +123,7 @@ const update = async (user, statString, updateVal) => {
 	return `\`${statString}\` has been updated.`;
 };
 
-const view = async (interaction) => {
+const view = async interaction => {
 	const user = await getUser(interaction);
 
 	if (user?.value()?.length) {
@@ -148,7 +148,7 @@ const view = async (interaction) => {
 	}
 };
 
-const leaderboard = async (interaction) => {
+const leaderboard = async interaction => {
 	if (!interaction.guild) {
 		await interaction.editReply('A leaderboard doesn\'t really make sense here...');
 		return;

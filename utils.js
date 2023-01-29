@@ -70,8 +70,8 @@ const timecodeFormats = {
 
 const createTimecode = (timestamp, format) => `<t:${timestamp / 1000}:${timecodeFormats[format]}>`;
 
-const getGuild = async (interaction) => await interaction.client.db.get(`guilds[${interaction.guild.id}]`);
-const getUser = async (interaction) => await interaction.client.db.get(`statistics[${interaction.user.id}]`);
+const getGuild = async interaction => await interaction.client.db.get(`guilds[${interaction.guild.id}]`);
+const getUser = async interaction => await interaction.client.db.get(`statistics[${interaction.user.id}]`);
 
 module.exports = {
 	getFilepaths,

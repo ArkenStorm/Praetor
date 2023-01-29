@@ -20,11 +20,11 @@ module.exports = {
 		}
 		await interaction.reply({ content: 'Git process started; Praetor will be online again shortly.', ephemeral: true });
 		exec('git pull && npm install && npm run restart',
-			async (error) => {
+			async error => {
 				if (error) {
 					logError(interaction.client, error, interaction);
 				}
 			});
 	},
-	global: true
+	global: false
 };

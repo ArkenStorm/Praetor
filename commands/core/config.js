@@ -12,10 +12,10 @@ const data = new SlashCommandBuilder()
 			.setDescription('Edit your server\'s config')
 	);
 
-const init = async (interaction) => {
+const init = async interaction => {
 	const guildConfig = {
 		defaults: {}
-	}
+	};
 	// create config options per command, with "enabled" always present
 	// "color" option is just a string option with color validation, i.e. const isValidHexCode = (str) => /^#[0-9A-F]{6}$/i.test(str)
 	// command select menus need to be paginated in 5s

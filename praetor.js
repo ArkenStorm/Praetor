@@ -57,9 +57,9 @@ for (const filepath of eventsFiles) {
 }
 
 // default promise rejection handling
-process.on('unhandledRejection', (err) => logError(client, err));
+process.on('unhandledRejection', err => logError(client, err));
 
 // last ditch error handling
-process.on('uncaughtException', (err) => logError(client, err));
+process.on('uncaughtException', err => logError(client, err));
 
 client.login(token);

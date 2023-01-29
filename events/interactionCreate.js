@@ -23,6 +23,8 @@ module.exports = {
 				await command.autocomplete(interaction);
 			} else if (interaction.isStringSelectMenu()) {
 				await interaction.update(`selected values: ${interaction.values.join(', ')}`);
+			} else if (interaction.isModalSubmit()) {
+				await command.onSubmit(interaction);
 			}
 		} catch (error) {
 			handleError(interaction, error);
