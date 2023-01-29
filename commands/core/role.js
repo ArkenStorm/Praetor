@@ -32,5 +32,6 @@ const configOptions = {
 
 module.exports = {
 	data,
-	execute
+	execute,
+	name: 'role'
 };

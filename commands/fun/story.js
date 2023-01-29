@@ -60,5 +60,6 @@ const onSubmit = async interaction => {
 module.exports = {
 	data,
 	execute,
-	onSubmit
+	onSubmit,
+	name: 'story'
 };

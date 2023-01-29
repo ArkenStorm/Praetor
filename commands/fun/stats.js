@@ -213,5 +213,6 @@ module.exports = {
 	data,
 	execute,
 	autocomplete,
-	global: true
+	global: true,
+	name: 'stats'
 };

@@ -1,7 +1,7 @@
 const path = require('node:path');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const { token } = require('./auth.json');
-const { getFilepaths, logError } = require('./utils');
+const { getFiles, getFilepaths, logError } = require('./utils');
 
 const clientOptions = {
 	intents: [
@@ -46,9 +46,8 @@ for (const filepath of commandFiles) {
 
 // Set up event listeners
 const eventsPath = path.join(__dirname, 'events');
-const eventsFiles = getFilepaths(eventsPath);
-for (const filepath of eventsFiles) {
-	const event = require(filepath);
+const eventsFiles = getFiles(eventsPath);
+for (const event of eventsFiles) {
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
 	} else {

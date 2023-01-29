@@ -44,6 +44,6 @@ const autocomplete = async interaction => {
 module.exports = {
 	data,
 	execute,
-	autocomplete
-	// global: true
+	autocomplete,
+	name: 'tag'
 };

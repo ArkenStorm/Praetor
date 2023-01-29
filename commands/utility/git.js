@@ -26,5 +26,6 @@ module.exports = {
 				}
 			});
 	},
-	global: false
+	global: false,
+	name: 'git'
 };

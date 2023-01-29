@@ -1,4 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { getFiles } = require('../../utils');
+const path = require('node:path');
 
 const data = new SlashCommandBuilder()
 	.setName('config')
@@ -9,20 +11,56 @@ const data = new SlashCommandBuilder()
 	)
 	.addSubcommand(subcommand =>
 		subcommand.setName('edit')
-			.setDescription('Edit your server\'s config')
+			.setDescription('Edit your server\'s config') // have a list of all command names
+	)
+	.addSubcommand(subcommand =>
+		subcommand.setName('view')
+			.setDescription('View your server\'s config')
 	);
 
+const getFunctionalities = functionality => getFiles(path.join(__dirname, functionality));
+
+const defaultOptions = {
+	embedColor: '#2295d4',
+	channelId: null,
+	percentChance: 10,
+	minCount: 5,
+	overrides: {},
+	onlyUseOverrides: true
+};
+
+// Requires every command/behavior to have a name
+const applyFunctionalityOptions = (functionalities, config) => {
+	functionalities.forEach(f => {
+		const options = Object.keys(f.configOptions).reduce((acc, key) => acc[key] = defaultOptions[key], {});
+		config[f.name] = Object.assign({ enabled: false }, options);
+	});
+};
+
 const init = async interaction => {
+	await interaction.deferReply();
 	const guildConfig = {
-		defaults: {}
+		defaults: { embedColor: '#2295d4' }
 	};
-	// create config options per command, with "enabled" always present
+
+	// only deal with non-global commands
+	const commands = getFunctionalities('commands').filter(c => !Object.hasOwn(c, 'global'));
+	const behaviors = getFunctionalities('behaviors');
+
+	applyFunctionalityOptions(commands, guildConfig);
+	applyFunctionalityOptions(behaviors, guildConfig);
 	// "color" option is just a string option with color validation, i.e. const isValidHexCode = (str) => /^#[0-9A-F]{6}$/i.test(str)
 	// command select menus need to be paginated in 5s
 };
 
+const edit = async interaction => {
+	// use validators from configOptions here
+	console.log(interaction);
+};
+
 const subcommandFunctions = {
-	init
+	init,
+	edit
 };
 
 const execute = async interaction => {
@@ -45,5 +83,6 @@ const execute = async interaction => {
 module.exports = {
 	data,
 	execute,
-	global: true
+	global: true,
+	name: 'config'
 };

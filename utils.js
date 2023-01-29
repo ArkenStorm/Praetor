@@ -7,7 +7,7 @@ const getFilepaths = dir => {
 	const paths = files.map(file => {
 		const filepath = path.join(dir, file.name);
 		if (file.isDirectory()) {
-			return getFilepaths(filepath);
+			return getFiles(filepath);
 		}
 		// Shouldn't need to worry about any non-js files here
 		return filepath;
@@ -16,8 +16,11 @@ const getFilepaths = dir => {
 	return paths.flat(Infinity);
 };
 
+const getFiles = dir => getFilepaths(dir).map(p => require(p));
+
 // general permission checking function
 // always allow my user id
+// fp.split('/').at(-1).slice(0, -3); // for file names
 
 const logError = (client, err, interaction) => {
 	console.error(err);
@@ -69,15 +72,18 @@ const timecodeFormats = {
 };
 
 const createTimecode = (timestamp, format) => `<t:${timestamp / 1000}:${timecodeFormats[format]}>`;
+const isValidHexCode = str => /^#[0-9A-F]{6}$/i.test(str);
 
 const getGuild = async interaction => await interaction.client.db.get(`guilds[${interaction.guild.id}]`);
 const getUser = async interaction => await interaction.client.db.get(`statistics[${interaction.user.id}]`);
 
 module.exports = {
+	getFiles,
 	getFilepaths,
 	logError,
 	logMessage,
 	createTimecode,
+	isValidHexCode,
 	getGuild,
 	getUser
 };

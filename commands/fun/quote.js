@@ -1,5 +1,5 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { getGuild } = require('../../utils');
+const { getGuild, isValidHexCode } = require('../../utils');
 
 const data = new SlashCommandBuilder()
 	.setName('quote')
@@ -20,7 +20,7 @@ const execute = async interaction => {
 	const quote = interaction.options.getString('quote');
 
 	const quoteEmbed = new EmbedBuilder()
-		.setColor('#2295d4')
+		.setColor('#2295d4') // get color from config
 		.addFields([{ name: '\u200b', value: quote }, { name: '\u200b', value: `- ${speakerOfTheQuote}` }])
 		.setFooter({ text: `Quoted by ${interaction.member.displayName}`, iconURL: interaction.member.displayAvatarURL() });
 
@@ -33,7 +33,21 @@ const execute = async interaction => {
 	}
 };
 
+const configOptions = {
+	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, setc.>, validation: <func> }
+	embedColor: {
+		type: 'Color',
+		validator: isValidHexCode
+	},
+	channelId: {
+		type: String
+		// validator: val => val // test if it's a valid channelId or nah?
+	}
+};
+
 module.exports = {
+	configOptions,
 	data,
-	execute
+	execute,
+	name: 'quote'
 };

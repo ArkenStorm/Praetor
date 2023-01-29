@@ -1,6 +1,6 @@
 const { REST, Routes } = require('discord.js');
 const { clientId, token } = require('./auth.json');
-const { getFilepaths } = require('./utils');
+const { getFiles } = require('./utils');
 const { startDatabase } = require('./database/db');
 const path = require('node:path');
 const arkchatGuildId = '383889230704803851';
@@ -15,7 +15,7 @@ const cliArgs = process.argv.slice(2);
 const getCommandDetails = async () => {
 	const commands = [];
 	const baseCommandPath = path.join(__dirname, 'commands');
-	const commandFiles = getFilepaths(baseCommandPath);
+	const commandFiles = getFiles(baseCommandPath);
 	let guildId = '';
 	const deployGlobally = cliArgs.includes('-g') || cliArgs.includes('--global');
 
@@ -30,17 +30,14 @@ const getCommandDetails = async () => {
 			console.log('That server does not have a configuration set up. You must initialize the configuration and choose which commands to use in that server.');
 			return ({ route: null, commands: null });
 		}
-		commandFiles.reduce((acc, fp) => {
-			const commandName = fp.split('/').at(-1).slice(0, -3);
-			const command = require(fp);
-			if (guildConfig.enabledCommands.includes(commandName)) {
+		commandFiles.reduce((acc, command) => {
+			if (guildConfig.enabledCommands.includes(command.name)) {
 				acc.push(command.data.toJSON());
 			}
 			return acc;
 		}, commands);
 	} else {
-		commandFiles.reduce((acc, fp) => {
-			const command = require(fp);
+		commandFiles.reduce((acc, command) => {
 			if (command.global === deployGlobally) {
 				acc.push(command.data.toJSON());
 			}
