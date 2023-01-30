@@ -38,7 +38,11 @@ const applyFunctionalityOptions = (functionalities, config) => {
 };
 
 const init = async interaction => {
-	await interaction.deferReply();
+	if (!interaction.inGuild()) {
+		await interaction.reply('Configs cannot exist in DMs.');
+	}
+	// TODO: CHECK PERMISSIONS!!!
+	await interaction.deferReply({ ephemeral: true });
 	const guildConfig = {
 		defaults: { embedColor: '#2295d4' }
 	};
@@ -49,8 +53,8 @@ const init = async interaction => {
 
 	applyFunctionalityOptions(commands, guildConfig);
 	applyFunctionalityOptions(behaviors, guildConfig);
-	// "color" option is just a string option with color validation, i.e. const isValidHexCode = (str) => /^#[0-9A-F]{6}$/i.test(str)
-	// command select menus need to be paginated in 5s
+	// write to database here
+	await interaction.editReply('Config for this server has been initialized!');
 };
 
 const edit = async interaction => {
