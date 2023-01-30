@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField  } = require('discord.js');
 
 const getFilepaths = dir => {
 	const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -18,7 +18,20 @@ const getFilepaths = dir => {
 
 const getFiles = dir => getFilepaths(dir).map(p => require(p));
 
-// general permission checking function
+// general permission checking function; use permission bitfield?
+const checkPermission = (interaction, permission) => {
+	if (!interaction.member) {
+		return false; // not in a guild, not allowed
+	}
+	if (!PermissionsBitField.Flags.hasOwnProperty(permission)) {
+		console.error(`${permission} is not a valid DiscordJS permission.`);
+		return false;
+	}
+	if (interaction.member.permissionsIn(interaction.channel).has(permission)) {
+		console.log('idk yet')
+	}
+}
+
 // always allow my user id
 // fp.split('/').at(-1).slice(0, -3); // for file names
 
