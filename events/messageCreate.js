@@ -13,6 +13,6 @@ module.exports = {
 	name: Events.MessageCreate,
 	async execute(message) {
 		// get guild config, check if tags (and any other future necessary ones) are enabled, otherwise just return
-		console.log(message);
+		// console.log(message);
 	}
 };

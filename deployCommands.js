@@ -6,10 +6,6 @@ const path = require('node:path');
 const arkchatGuildId = '383889230704803851';
 // does clientId need to be dynamic with sharding?
 
-let db;
-startDatabase('./database/db.json').then(database => {
-	db = database;
-});
 
 const cliArgs = process.argv.slice(2);
 const getCommandDetails = async () => {
@@ -22,6 +18,8 @@ const getCommandDetails = async () => {
 	if (cliArgs.includes('-r') || cliArgs.includes('--reset')) {
 		guildId = arkchatGuildId;
 	} else if (cliArgs.includes('-G') || cliArgs.includes('--guild')) {
+		const db = await startDatabase('./database/db.json');
+
 		let flagIndex = cliArgs.indexOf('-G');
 		if (flagIndex < 0) {
 			flagIndex = cliArgs.indexOf('--guild');
@@ -32,12 +30,13 @@ const getCommandDetails = async () => {
 			console.log('That server does not have a configuration set up. You must initialize the configuration and choose which commands to use in that server.');
 			return ({ route: null, commands: null });
 		}
-		commandFiles.reduce((acc, command) => {
-			if (guildConfig.enabledCommands.includes(command.name)) {
-				acc.push(command.data.toJSON());
-			}
-			return acc;
-		}, commands);
+		commandFiles.filter(cf => !cf.global)
+			.reduce((acc, command) => {
+				if (guildConfig[command.name].enabled) {
+					acc.push(command.data.toJSON());
+				}
+				return acc;
+			}, commands);
 	} else {
 		commandFiles.reduce((acc, command) => {
 			if (command.global === deployGlobally) {

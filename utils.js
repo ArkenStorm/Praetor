@@ -2,6 +2,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { EmbedBuilder } = require('discord.js');
 
+
+const getFiles = dir => getFilepaths(dir).map(p => require(p));
+
 const getFilepaths = dir => {
 	const files = fs.readdirSync(dir, { withFileTypes: true });
 	const paths = files.map(file => {
@@ -16,7 +19,7 @@ const getFilepaths = dir => {
 	return paths.flat(Infinity);
 };
 
-const getFiles = dir => getFilepaths(dir).map(p => require(p));
+const getFunctionalities = functionality => getFiles(path.join(__dirname, functionality));
 
 // general permission checking function
 // always allow my user id
@@ -71,7 +74,7 @@ const timecodeFormats = {
 	'dynamic': 'R'
 };
 
-const createTimecode = (timestamp, format) => `<t:${timestamp / 1000}:${timecodeFormats[format]}>`;
+const createTimecode = (timestamp, format) => `<t:${Math.floor(timestamp / 1000)}:${timecodeFormats[format]}>`;
 const isValidHexCode = str => /^#[0-9A-F]{6}$/i.test(str);
 
 const getGuild = async interaction => await interaction.client.db.get(`guilds[${interaction.guild.id}]`);
@@ -80,6 +83,7 @@ const getUser = async interaction => await interaction.client.db.get(`statistics
 module.exports = {
 	getFiles,
 	getFilepaths,
+	getFunctionalities,
 	logError,
 	logMessage,
 	createTimecode,

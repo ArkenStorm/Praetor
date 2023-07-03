@@ -27,7 +27,7 @@ const execute = async interaction => {
 };
 
 const configOptions = {
-	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, setc.>, validation: <func> }
+	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, etc.>, validation: <func> }
 };
 
 module.exports = {
