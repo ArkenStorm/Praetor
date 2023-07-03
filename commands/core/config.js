@@ -87,6 +87,6 @@ const execute = async interaction => {
 module.exports = {
 	data,
 	execute,
-	global: true,
+	global: false,
 	name: 'config'
 };

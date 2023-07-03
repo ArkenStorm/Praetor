@@ -49,8 +49,8 @@ const getCommandDetails = async () => {
 	}
 
 	const route = guildId ?
-		Routes.applicationCommands(clientId) :
-		Routes.applicationGuildCommands(clientId, guildId);
+		Routes.applicationGuildCommands(clientId, guildId) :
+		Routes.applicationCommands(clientId);
 
 	return {
 		commands,
@@ -69,10 +69,12 @@ const getCommandDetails = async () => {
  * 	4) command: node deployCommands.js -r
  * 		effect: resets Arkchat guild-specific commands
  */
-const { route, commands } = getCommandDetails();
-
 const rest = new REST({ version: '10' }).setToken(token);
 const loadCommands = (async () => {
+	const { route, commands } = await getCommandDetails();
+	if (!route || !commands) {
+		return;
+	}
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 		const data = await rest.put(
@@ -86,9 +88,7 @@ const loadCommands = (async () => {
 	}
 });
 
-if (route && commands) {
-	loadCommands();
-}
+loadCommands();
 
 module.exports = {
 	loadCommands

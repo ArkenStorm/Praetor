@@ -61,5 +61,6 @@ module.exports = {
 	data,
 	execute,
 	onSubmit,
+	global: false,
 	name: 'story'
 };

@@ -49,5 +49,6 @@ module.exports = {
 	configOptions,
 	data,
 	execute,
+	global: false,
 	name: 'quote'
 };
