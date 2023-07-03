@@ -19,7 +19,9 @@ const getCommandDetails = async () => {
 	let guildId = '';
 	const deployGlobally = cliArgs.includes('-g') || cliArgs.includes('--global');
 
-	if (cliArgs.includes('-G') || cliArgs.includes('--guild')) {
+	if (cliArgs.includes('-r') || cliArgs.includes('--reset')) {
+		guildId = arkchatGuildId;
+	} else if (cliArgs.includes('-G') || cliArgs.includes('--guild')) {
 		let flagIndex = cliArgs.indexOf('-G');
 		if (flagIndex < 0) {
 			flagIndex = cliArgs.indexOf('--guild');
@@ -61,9 +63,11 @@ const getCommandDetails = async () => {
  * 	1) command: node deployCommands.js
  * 		effect: deploys all commands to the Arkchat guild, for testing
  * 	2) command: node deployCommands.js -g
- * 		effect: deploys all global commands, hardcoded in the `getCommandDetails()` function
+ * 		effect: deploys all global commands
  * 	3) command: node deployCommands.js -G 383889230704803851
  * 		effect: deploys commands to the guild based on their configuration
+ * 	4) command: node deployCommands.js -r
+ * 		effect: resets Arkchat guild-specific commands
  */
 const { route, commands } = getCommandDetails();
 

@@ -7,7 +7,7 @@ const getFilepaths = dir => {
 	const paths = files.map(file => {
 		const filepath = path.join(dir, file.name);
 		if (file.isDirectory()) {
-			return getFiles(filepath);
+			return getFilepaths(filepath);
 		}
 		// Shouldn't need to worry about any non-js files here
 		return filepath;
