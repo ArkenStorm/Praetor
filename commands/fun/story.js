@@ -22,7 +22,7 @@ const execute = async interaction => {
 	for (let i = 0; i < numLines; i++) {
 		const line = new TextInputBuilder()
 			.setCustomId(`line${i}`)
-			.setLabel(`Line ${i}`)
+			.setLabel(`Line ${i + 1}`)
 			.setStyle(TextInputStyle.Short)
 			.setPlaceholder('<Name>: "The thing they said"')
 			.setMaxLength(1024)
@@ -34,17 +34,17 @@ const execute = async interaction => {
 };
 
 const onSubmit = async interaction => {
-	// TODO: This embed formatting is going to need to change
-	const embedFields = [];
-	for (let i = 0; i < interaction.fields.size(); i++) {
+	await interaction.deferReply({ ephemeral: true });
+	const dialogueLines = [];
+	for (let i = 0; i < interaction.fields.fields.size; i++) {
 		const lineText = interaction.fields.getTextInputValue(`line${i}`);
-		embedFields.push({ name: '\u200b', value: lineText });
+		dialogueLines.push(lineText);
 	}
 
 	const quoteEmbed = new EmbedBuilder()
 		.setColor('#2295d4')
-		.addFields(embedFields)
-		.setFooter({ text: `Provided by ${interaction.member.displayName}`, iconURL: interaction.member.displayAvatarURL() });
+		.setAuthor({ name: interaction.member.displayName, iconURL: interaction.member.displayAvatarURL() })
+		.setDescription(dialogueLines.join('\n'));
 
 	const quoteChannelId = (await getGuild(interaction))?.value()?.config?.quoteChannelId;
 	if (quoteChannelId) {
