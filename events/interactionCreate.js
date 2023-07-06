@@ -12,32 +12,8 @@ const handleError = async (interaction, error, message = 'There was an error exe
 	}
 };
 
-const handleCommandInteraction = async interaction => {
-	const command = interaction.client.commands.get(interaction.commandName);
-	if (!command) {
-		logError(interaction.client, `No command matching ${interaction.commandName} was found.`, interaction);
-	}
-
-	if (interaction.isChatInputCommand()) {
-		await command.execute(interaction);
-	} else if (interaction.isAutocomplete()) {
-		await command.autocomplete(interaction);
-	}
-};
-
-const handleComponentInteraction = async interaction => {
-	if (interaction.isStringSelectMenu()) {
-		await interaction.update(`Selected values: ${interaction.values.join(', ')}`);
-	}
-}
-
 const customIdCommands = {
 	'storyModal': 'story'
-}
-
-const handleModalSubmitInteraction = async interaction => {
-	const command = interaction.client.commands.get(customIdCommands[interaction.customId]);
-	await command.onSubmit(interaction);
 }
 
 module.exports = {
@@ -45,11 +21,18 @@ module.exports = {
 	async execute(interaction) {
 		try {
 			if (interaction.isCommand()) {
-				handleCommandInteraction(interaction);
+				const command = interaction.client.commands.get(interaction.commandName);
+				await command.execute(interaction);
 			} else if (interaction.isMessageComponent()) {
 				handleComponentInteraction(interaction);
 			} else if (interaction.isModalSubmit()) {
-				handleModalSubmitInteraction(interaction);
+				const command = interaction.client.commands.get(customIdCommands[interaction.customId]);
+				await command.onSubmit(interaction);
+			} else if (interaction.isStringSelectMenu()) {
+				await interaction.update(`Selected values: ${interaction.values.join(', ')}`);
+			} else if (interaction.isAutocomplete()) {
+				const command = interaction.client.commands.get(interaction.commandName);
+				await command.autocomplete(interaction);
 			} else {
 				logError(interaction, `No handler for ${interaction.type} interactions.`);
 			}

@@ -69,6 +69,7 @@ const edit = async interaction => {
 };
 
 const view = async interaction => {
+	// add a button to provide the option to edit the config
 	await interaction.editReply('Functionality not implemented yet');
 }
 
