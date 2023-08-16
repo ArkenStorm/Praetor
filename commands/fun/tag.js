@@ -45,5 +45,6 @@ module.exports = {
 	data,
 	execute,
 	autocomplete,
+	global: false,
 	name: 'tag'
 };

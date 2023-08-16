@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { getFiles } = require('../../utils');
-const path = require('node:path');
+const { getFunctionalities } = require('../../utils');
 
 const data = new SlashCommandBuilder()
 	.setName('config')
@@ -18,8 +17,6 @@ const data = new SlashCommandBuilder()
 			.setDescription('View your server\'s config')
 	);
 
-const getFunctionalities = functionality => getFiles(path.join(__dirname, functionality));
-
 const defaultOptions = {
 	embedColor: '#2295d4',
 	channelId: null,
@@ -32,39 +29,54 @@ const defaultOptions = {
 // Requires every command/behavior to have a name
 const applyFunctionalityOptions = (functionalities, config) => {
 	functionalities.forEach(f => {
-		const options = Object.keys(f.configOptions).reduce((acc, key) => acc[key] = defaultOptions[key], {});
+		const options = f.configOptions ? 
+			Object.keys(f.configOptions).reduce((acc, key) => acc[key] = defaultOptions[key], {}) :
+			{};
 		config[f.name] = Object.assign({ enabled: false }, options);
 	});
 };
 
 const init = async interaction => {
 	if (!interaction.inGuild()) {
-		await interaction.reply('Configs cannot exist in DMs.');
+		await interaction.editReply('Configs cannot exist in DMs.');
 	}
+	const hasConfig = await interaction.client.db.get(`guilds[${interaction.guild.id}]`).value();
+	if (hasConfig) {
+		await interaction.editReply('This server already has a config initialized!');
+		return;
+	}
+
 	// TODO: CHECK PERMISSIONS!!!
-	await interaction.deferReply({ ephemeral: true });
 	const guildConfig = {
 		defaults: { embedColor: '#2295d4' }
 	};
 
 	// only deal with non-global commands
-	const commands = getFunctionalities('commands').filter(c => !Object.hasOwn(c, 'global'));
-	const behaviors = getFunctionalities('behaviors');
+	const commands = getFunctionalities('commands').filter(c => !c.global);
+	// const behaviors = getFunctionalities('behaviors');
 
 	applyFunctionalityOptions(commands, guildConfig);
-	applyFunctionalityOptions(behaviors, guildConfig);
-	// write to database here
+	// TODO: implement behaviors
+	// applyFunctionalityOptions(behaviors, guildConfig);
+	await interaction.client.db.set(`guilds[${interaction.guild.id}]`, guildConfig).write();
+
 	await interaction.editReply('Config for this server has been initialized!');
 };
 
 const edit = async interaction => {
 	// use validators from configOptions here
-	console.log(interaction);
+	await interaction.editReply('Functionality not implemented yet');
 };
+
+const view = async interaction => {
+	// add a button to provide the option to edit the config
+	await interaction.editReply('Functionality not implemented yet');
+}
 
 const subcommandFunctions = {
 	init,
-	edit
+	edit,
+	view
 };
 
 const execute = async interaction => {

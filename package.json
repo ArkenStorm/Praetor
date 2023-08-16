@@ -9,8 +9,11 @@
 		"start": "pm2 start praetor --time",
 		"dev": "pm2 start --watch --ignore-watch='node_modules' --watch='**/*.js' praetor --no-daemon",
 		"logs": "pm2 logs",
-		"deploy-guild": "node deployCommands.js",
-		"deploy-global": "node deployCommands.js -g"
+		"deploy-testing": "node deployCommands.js",
+		"deploy-global": "node deployCommands.js -g",
+		"deploy-guild": "node deployCommands.js -G",
+		"deploy-reset": "node deployCommands.js -r",
+		"run-dev": "node praetor.js"
 	},
 	"repository": {
 		"type": "git",
