@@ -60,6 +60,8 @@ const data = new SlashCommandBuilder()
 			)
 	);
 
+// add /stats reset all:Boolean
+
 const track = async interaction => {
 	const stat = interaction.options.getString('stat');
 	const value = interaction.options.getNumber('value');
