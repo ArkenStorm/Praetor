@@ -57,9 +57,9 @@ const configOptions = {
 };
 
 module.exports = {
-	configOptions,
 	data,
 	execute,
+	configOptions,
 	global: false,
 	name: 'quote'
 };

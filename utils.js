@@ -90,8 +90,8 @@ const timecodeFormats = {
 const createTimecode = (timestamp, format) => `<t:${Math.floor(timestamp / 1000)}:${timecodeFormats[format]}>`;
 const isValidHexCode = str => /^#[0-9A-F]{6}$/i.test(str);
 
-const getGuild = async interaction => await interaction.client.db.get(`guilds[${interaction.guild.id}]`);
-const getUser = async interaction => await interaction.client.db.get(`statistics[${interaction.user.id}]`);
+// instead of interaction, destructure the client from a generic object? It would only work with things that have a client property, but that's fine
+const getGuild = async interaction => await interaction.client.db.get(`guilds[${interaction.guildId}]`);
 
 module.exports = {
 	getFiles,
@@ -101,6 +101,5 @@ module.exports = {
 	logMessage,
 	createTimecode,
 	isValidHexCode,
-	getGuild,
-	getUser
+	getGuild
 };

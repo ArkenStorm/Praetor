@@ -1,5 +1,4 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { getUser } = require('../../utils');
 
 const data = new SlashCommandBuilder()
 	.setName('stats')
@@ -61,6 +60,7 @@ const data = new SlashCommandBuilder()
 	);
 
 // add /stats reset all:Boolean
+const getUser = async interaction => await interaction.client.db.get(`statistics[${interaction.user.id}]`);
 
 const track = async interaction => {
 	const stat = interaction.options.getString('stat');
