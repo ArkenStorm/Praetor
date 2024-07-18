@@ -68,7 +68,8 @@ const track = async interaction => {
 
 	const trackedUser = await getUser(interaction);
 	if (!trackedUser.value()) {
-		await interaction.client.db.set(`statistics[${interaction.user.id}]`, []).write();
+		// await interaction.client.db.set(`statistics[${interaction.user.id}]`, []).write();
+		await interaction.client.db.update( ({ statistics }) => statistics[interaction.user.id] = [] );
 	}
 
 	const user = await getUser(interaction);

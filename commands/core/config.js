@@ -60,7 +60,8 @@ const init = async interaction => {
 	applyFunctionalityOptions(commands, guildConfig);
 	// TODO: implement behaviors
 	// applyFunctionalityOptions(behaviors, guildConfig);
-	await interaction.client.db.set(`guilds[${interaction.guild.id}]`, guildConfig).write();
+	// await interaction.client.db.set(`guilds[${interaction.guild.id}]`, guildConfig).write();
+	await interaction.client.db.update( ({ guilds }) => guilds[interaction.guild.id] = guildConfig );
 
 	await interaction.editReply('Config for this server has been initialized!');
 };
