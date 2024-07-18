@@ -1,5 +1,7 @@
-const { Events } = require('discord.js');
-const { getGuild, logError } = require('../utils');
+// const { Events } = require('discord.js');
+import { Events } from 'discord.js';
+// const { getGuild, logError } = require('../utils');
+import { getGuild, logError } from '../utils';
 
 const handleError = async (interaction, error, message = 'There was an error executing this command') => {
 	logError(interaction.client, error, interaction);

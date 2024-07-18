@@ -1,5 +1,7 @@
-const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { getGuild, isValidHexCode } = require('../../utils');
+// const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+// const { getGuild, isValidHexCode } = require('../../utils');
+import { getGuild, isValidHexCode } from '../../utils';
 
 const data = new SlashCommandBuilder()
 	.setName('quote')

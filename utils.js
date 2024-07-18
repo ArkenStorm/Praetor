@@ -1,6 +1,9 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const { EmbedBuilder, PermissionsBitField  } = require('discord.js');
+// const fs = require('node:fs');
+import fs from 'node:fs';
+// const path = require('node:path');
+import path from 'node:path';
+// const { EmbedBuilder, PermissionsBitField  } = require('discord.js');
+import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 
 
 const getFiles = dir => getFilepaths(dir).map(p => require(p));

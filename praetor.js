@@ -1,7 +1,11 @@
-const path = require('node:path');
-const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
-const { token } = require('./auth.json');
-const { getFiles, getFilepaths, logError } = require('./utils');
+// const path = require('node:path');
+import path from 'node:path';
+// const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
+import { Client, GatewayIntentBits, Partials, Collection } from 'discord.js';
+// const { token } = require('./auth.json');
+import { token } from './auth.json';
+// const { getFiles, getFilepaths, logError } = require('./utils');
+import { getFiles, getFilepaths, logError } from './utils';
 
 const clientOptions = {
 	intents: [

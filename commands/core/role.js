@@ -1,4 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js');
+// const { SlashCommandBuilder } = require('discord.js');
+import { SlashCommandBuilder } from 'discord.js';
 
 const data = new SlashCommandBuilder()
 	.setName('role')

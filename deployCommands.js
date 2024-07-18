@@ -1,8 +1,13 @@
-const { REST, Routes } = require('discord.js');
-const { clientId, token } = require('./auth.json');
-const { getFiles } = require('./utils');
-const { startDatabase } = require('./database/db');
-const path = require('node:path');
+// const { REST, Routes } = require('discord.js');
+import { REST, Routes } from 'discord.js';
+// const { clientId, token } = require('./auth.json');
+import { clientId, token } from './auth.json';
+// const { getFiles } = require('./utils');
+import { getFiles } from './utils';
+// const { startDatabase } = require('./database/db');
+import { startDatabase } from './database/db';
+// const path = require('node:path');
+import path from 'node:path';
 const arkchatGuildId = '383889230704803851';
 // does clientId need to be dynamic with sharding?
 

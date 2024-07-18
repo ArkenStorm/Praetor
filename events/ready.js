@@ -1,6 +1,9 @@
-const { Events } = require('discord.js');
-const { startDatabase } = require('../database/db');
-const { logMessage } = require('../utils');
+// const { Events } = require('discord.js');
+import { Events } from 'discord.js';
+// const { startDatabase } = require('../database/db');
+import { startDatabase } from '../database/db';
+// const { logMessage } = require('../utils');
+import { logMessage } from '../utils';
 
 module.exports = {
 	name: Events.ClientReady,

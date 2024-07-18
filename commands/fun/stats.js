@@ -1,5 +1,7 @@
-const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { getUser } = require('../../utils');
+// const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+// const { getUser } = require('../../utils');
+import { getUser } from '../../utils';
 
 const data = new SlashCommandBuilder()
 	.setName('stats')

@@ -1,5 +1,7 @@
-const { AuditLogEvent, Events } = require('discord.js');
-const { logError } = require('../utils');
+// const { AuditLogEvent, Events } = require('discord.js');
+import { AuditLogEvent, Events } from 'discord.js';
+// const { logError } = require('../utils');
+import { logError } from '../utils';
 
 const handleError = async (interaction, error, message = 'There was an error executing this command') => {
 	logError(interaction.client, error, interaction);
