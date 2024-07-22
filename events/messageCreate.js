@@ -1,7 +1,7 @@
 // const { Events } = require('discord.js');
 import { Events } from 'discord.js';
 // const { getGuild, logError } = require('../utils');
-import { getGuild, logError } from '../utils';
+import { logError } from '../utils';
 // const { showTag } = require('../commands/fun/tag');
 import { showTag } from '../commands/fun/tag';
 
