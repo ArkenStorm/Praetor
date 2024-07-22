@@ -62,6 +62,9 @@ const data = new SlashCommandBuilder()
 			)
 	);
 
+// add /stats reset all:Boolean
+const getUser = async interaction => await interaction.client.db.get(`statistics[${interaction.user.id}]`);
+
 const track = async interaction => {
 	const stat = interaction.options.getString('stat');
 	const value = interaction.options.getNumber('value');

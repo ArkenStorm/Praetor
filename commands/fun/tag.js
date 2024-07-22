@@ -1,5 +1,7 @@
 // const { SlashCommandBuilder } = require('discord.js');
 import { SlashCommandBuilder } from 'discord.js';
+// const { getGuild } = require('../../utils');
+import { getGuild } from '../../utils';
 
 const data = new SlashCommandBuilder()
 	.setName('tag')
@@ -12,6 +14,16 @@ const data = new SlashCommandBuilder()
 				option.setName('name')
 					.setDescription('The name of the tag')
 					.setRequired(true)
+			)
+			.addAttachmentOption(option =>
+				option.setName('file')
+					.setDescription('An optional image to display when the tag is invoked')
+					.setRequired(true)
+			)
+			.addStringOption(option =>
+				option.setName('caption')
+					.setDescription('A caption to display with the tag')
+					.setRequired(false)
 			)
 	)
 	.addSubcommand(subcommand =>
@@ -29,8 +41,42 @@ const data = new SlashCommandBuilder()
 			.setDescription('View all the tags for this server')
 	);
 
-const subcommandFunctions = {
+const add = async interaction => {
+	const guild = await getGuild(interaction);
+	if (!guild.value()?.config?.tag?.enabled) { return; }
+	
+	const addedTags = guild.value().config.tag.tags;
+	const tags = addedTags || {};
 
+	const tagName = interaction.options.getString('name');
+	if (tagName in tags) {
+		await interaction.editReply({ content: 'That tag already exists; if you would like to replace it, first remove it and then try adding again.' });
+		return;
+	} else {
+		// add tag to db
+		// should be { tagName: 'something' } but idk what that something should be yet
+		// also make sure to take the file and write it to storage
+	}
+}
+
+const remove = async (interaction) => {
+	// make sure to remove the file from storage
+}
+
+const list = async (interaction) => {
+	// just iterate over the keys of the guild's tags and display them in a pretty embed
+}
+
+const showTag = async message => {
+	if (message.length < 2) { return; }
+	const guild = await message.client.db.get(`guilds[${message.guildId}]`);
+	if (!guild.value()?.config?.tag?.enabled) { return; }
+}
+
+const subcommandFunctions = {
+	add,
+	remove,
+	list
 };
 
 const execute = async interaction => {
@@ -38,7 +84,8 @@ const execute = async interaction => {
 	subcommandFunctions[interaction.options.getSubcommand()](interaction);
 };
 
-const autocomplete = async interaction => {
+const autocomplete = async (interaction) => {
+	// similar logic to getting the list of tags
 	await interaction.respond(['You believe in the illusion of choice?']);
 };
 
@@ -47,5 +94,6 @@ module.exports = {
 	execute,
 	autocomplete,
 	global: false,
-	name: 'tag'
+	name: 'tag',
+	showTag
 };

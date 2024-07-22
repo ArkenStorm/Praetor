@@ -19,60 +19,68 @@ const data = new SlashCommandBuilder()
 			.setDescription('View your server\'s config')
 	);
 
+// the heck are overrides for?!
 const defaultOptions = {
 	embedColor: '#2295d4',
-	channelId: null,
+	channelId: '',
 	percentChance: 10,
 	minCount: 5,
 	overrides: {},
-	onlyUseOverrides: true
+	onlyUseOverrides: true,
+	emojis: ['star']
 };
 
 // Requires every command/behavior to have a name
 const applyFunctionalityOptions = (functionalities, config) => {
 	functionalities.forEach(f => {
-		const options = f.configOptions ? 
+		const options = f.configOptions ?
 			Object.keys(f.configOptions).reduce((acc, key) => acc[key] = defaultOptions[key], {}) :
 			{};
-		config[f.name] = Object.assign({ enabled: false }, options);
+		if (!config[f.name]) { // only initialize if it doesn't exist already
+			config[f.name] = Object.assign({ enabled: false }, options);
+		}
 	});
 };
 
 const init = async interaction => {
 	if (!interaction.inGuild()) {
 		await interaction.editReply('Configs cannot exist in DMs.');
-	}
-	const hasConfig = await interaction.client.db.get(`guilds[${interaction.guild.id}]`).value();
-	if (hasConfig) {
-		await interaction.editReply('This server already has a config initialized!');
 		return;
+	}
+	let guildConfig = await interaction.client.db.get(`guilds[${interaction.guild.id}]`).value();
+	let botResponse = 'Config for this server has been initialized!';
+	if (!guildConfig) {
+		guildConfig = {
+			defaults: { embedColor: '#2295d4' }
+		}
+	} else {
+		botResponse = 'Config updated with new defaults!';
 	}
 
 	// TODO: CHECK PERMISSIONS!!!
-	const guildConfig = {
-		defaults: { embedColor: '#2295d4' }
-	};
-
 	// only deal with non-global commands
 	const commands = getFunctionalities('commands').filter(c => !c.global);
-	// const behaviors = getFunctionalities('behaviors');
+	const behaviors = getFunctionalities('behaviors').filter(b => !b.global);
 
 	applyFunctionalityOptions(commands, guildConfig);
-	// TODO: implement behaviors
-	// applyFunctionalityOptions(behaviors, guildConfig);
-	// await interaction.client.db.set(`guilds[${interaction.guild.id}]`, guildConfig).write();
+	applyFunctionalityOptions(behaviors, guildConfig);
 	await interaction.client.db.update( ({ guilds }) => guilds[interaction.guild.id] = guildConfig );
 
-	await interaction.editReply('Config for this server has been initialized!');
+	await interaction.editReply(botResponse);
 };
 
 const edit = async interaction => {
 	// use validators from configOptions here
+
+	// get the guild config
+	// autocomplete the command/behavior names for the user
+	// display an ephemeral card with the current config for the command/behavior
+	// have buttons to edit the different options there (or maybe not buttons, idk yet)
 	await interaction.editReply('Functionality not implemented yet');
 };
 
 const view = async interaction => {
-	// add a button to provide the option to edit the config
+	// add a button to provide the option to edit the config?
 	await interaction.editReply('Functionality not implemented yet');
 }
 
