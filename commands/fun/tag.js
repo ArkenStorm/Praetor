@@ -41,9 +41,9 @@ const data = new SlashCommandBuilder()
 
 const add = async interaction => {
 	const guild = await getGuild(interaction);
-	if (!guild.value()?.config?.tag?.enabled) { return; }
+	if (!guild?.config?.tag?.enabled) { return; }
 	
-	const addedTags = guild.value().config.tag.tags;
+	const addedTags = guild.config.tag.tags;
 	const tags = addedTags || {};
 
 	const tagName = interaction.options.getString('name');
@@ -67,8 +67,8 @@ const list = async (interaction) => {
 
 const showTag = async message => {
 	if (message.length < 2) { return; }
-	const guild = await message.client.db.get(`guilds[${message.guildId}]`);
-	if (!guild.value()?.config?.tag?.enabled) { return; }
+	const guild = await message.client.db.data.guilds[message.guildId];
+	if (!guild?.config?.tag?.enabled) { return; }
 }
 
 const subcommandFunctions = {

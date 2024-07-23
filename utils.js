@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 
 
@@ -20,6 +20,7 @@ const getFilepaths = dir => {
 	return paths.flat(Infinity);
 };
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const getFunctionalities = functionality => getFiles(path.join(__dirname, functionality));
 
 // general permission checking function; use permission bitfield?
@@ -92,7 +93,7 @@ const createTimecode = (timestamp, format) => `<t:${Math.floor(timestamp / 1000)
 const isValidHexCode = str => /^#[0-9A-F]{6}$/i.test(str);
 
 // instead of interaction, destructure the client from a generic object? It would only work with things that have a client property, but that's fine
-const getGuild = async interaction => await interaction.client.db.get(`guilds[${interaction.guildId}]`);
+const getGuild = async interaction => interaction.client.db.data.guilds[interaction.guildId];
 
 export {
 	getFiles,

@@ -45,7 +45,7 @@ const init = async interaction => {
 		await interaction.editReply('Configs cannot exist in DMs.');
 		return;
 	}
-	let guildConfig = await interaction.client.db.get(`guilds[${interaction.guild.id}]`).value();
+	let guildConfig = await interaction.client.db.data.guilds[interaction.guild.id];
 	let botResponse = 'Config for this server has been initialized!';
 	if (!guildConfig) {
 		guildConfig = {

@@ -60,26 +60,25 @@ const data = new SlashCommandBuilder()
 	);
 
 // add /stats reset all:Boolean
-const getUser = async interaction => await interaction.client.db.get(`statistics[${interaction.user.id}]`);
+const getUser = async interaction => interaction.client.db.data.statistics[interaction.user.id];
 
 const track = async interaction => {
 	const stat = interaction.options.getString('stat');
 	const value = interaction.options.getNumber('value');
 
 	const trackedUser = await getUser(interaction);
-	if (!trackedUser.value()) {
-		// await interaction.client.db.set(`statistics[${interaction.user.id}]`, []).write();
+	if (!trackedUser) {
 		await interaction.client.db.update( ({ statistics }) => statistics[interaction.user.id] = [] );
 	}
 
 	const user = await getUser(interaction);
-	const statIsTracked = await user.find(s => s.stat.toLowerCase() === stat.toLowerCase()).value();
+	const statIsTracked = await user.find(s => s.stat.toLowerCase() === stat.toLowerCase());
 	let message;
 
 	if (statIsTracked) {
 		message = 'I\'m already tracking that statistic for you.';
 	} else {
-		await user.push({ stat, value: value || 0 }).write();
+		await interaction.client.db.update( ({ statistics }) => statistics[interaction.user.id].push({ stat, value: value || 0 }) );
 		message = `Now tracking \`${stat}\` for you.`;
 	}
 
@@ -96,12 +95,12 @@ const executeIfStatExists = async interaction => {
 
 	if (user) {
 		let message;
-		const trackedStat = await user.find({ stat });
+		const trackedStat = await user.find(s => s.stat === stat);
 
-		if (trackedStat.value()) {
+		if (trackedStat) {
 			message = subcommand === 'untrack' ?
-				await untrack(user, stat) :
-				await update(user, stat, interaction.options.getNumber('value'));
+				await untrack(interaction, user, stat) :
+				await update(interaction, user, stat, interaction.options.getNumber('value'));
 		} else {
 			message = `I'm not currently tracking \`${stat}\` for you.`;
 		}
@@ -112,26 +111,30 @@ const executeIfStatExists = async interaction => {
 	}
 };
 
-const untrack = async (user, stat) => {
-	await user.remove({ stat }).write();
+const untrack = async (interaction, user, stat) => {
+	await interaction.client.db.update( ({ statistics }) => statistics[interaction.user.id] = user.filter(s => s.stat !== stat) );
 	return `No longer tracking \`${stat}\` for you.`;
 };
 
-const update = async (user, statString, updateVal) => {
+const update = async (interaction, user, stat, updateVal) => {
 	if (updateVal === 0) {
 		return 'You need to provide a value other than zero.';
 	}
-	const statObj = await user.find({ stat: statString });
-	await statObj.assign({ 'value': statObj.value().value + updateVal }).write();
-	return `\`${statString}\` has been updated.`;
+
+	await interaction.client.db.update( ({ statistics }) => {
+		const userStats = statistics[interaction.user.id];
+		const statIndex = userStats.findIndex(s => s.stat === stat);
+		userStats[statIndex].value += updateVal;
+	});
+	return `\`${stat}\` has been updated.`;
 };
 
 const view = async interaction => {
 	const user = await getUser(interaction);
 
-	if (user?.value()?.length) {
+	if (user?.length) {
 		const title = interaction.channel.isDMBased() ? 'Your statistics' : `${interaction?.member.displayName}'s statistics`;
-		const fields = user.value().map(entry => ({ name: entry.stat, value: entry.value.toString() }));
+		const fields = user.map(entry => ({ name: entry.stat, value: entry.value.toString() }));
 		fields.sort((a, b) => a.name.localeCompare(b.name));
 
 		const statsEmbed = new EmbedBuilder()
@@ -159,7 +162,7 @@ const leaderboard = async interaction => {
 	await interaction.editReply('Determining Leaderboard...');
 	const stat = interaction.options.getString('stat').toLowerCase();
 
-	const trackedUserIdsObj = await interaction.client.db.get('statistics').value();
+	const trackedUserIdsObj = await interaction.client.db.data.statistics;
 	const allTrackedUserIds = Object.keys(trackedUserIdsObj).map(key => ({ id: key, stats: trackedUserIdsObj[key] }));
 	const guildTrackedUserIds = allTrackedUserIds.filter(u => interaction.guild.members.cache.has(u.id));
 	const competingUsers = await guildTrackedUserIds.reduce(async (acc, u) => {
@@ -206,7 +209,7 @@ const autocomplete = async interaction => {
 	const user = await getUser(interaction);
 	let choices = [];
 	if (user) {
-		choices = user.value().map(entry => ({ name: entry.stat, value: entry.stat }));
+		choices = user.map(entry => ({ name: entry.stat, value: entry.stat }));
 	}
 	const filtered = choices.filter(c => c.name.toLowerCase().startsWith(focusedValue));
 	await interaction.respond(filtered);

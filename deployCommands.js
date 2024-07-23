@@ -25,7 +25,7 @@ const getCommandDetails = async () => {
 			flagIndex = cliArgs.indexOf('--guild');
 		}
 		guildId = cliArgs[flagIndex + 1];
-		const guildConfig = await db.get(`guilds[${guildId}]`).value();
+		const guildConfig = db.data.guilds[guildId];
 		if (!guildConfig) {
 			console.log('That server does not have a configuration set up. You must initialize the configuration and choose which commands to use in that server.');
 			return ({ route: null, commands: null });

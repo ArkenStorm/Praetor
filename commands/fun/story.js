@@ -46,7 +46,7 @@ const onSubmit = async interaction => {
 		.setAuthor({ name: interaction.member.displayName, iconURL: interaction.member.displayAvatarURL() })
 		.setDescription(dialogueLines.join('\n'));
 
-	const quoteChannelId = (await getGuild(interaction))?.value()?.config?.quoteChannelId;
+	const quoteChannelId = (await getGuild(interaction))?.config?.quoteChannelId;
 	if (quoteChannelId) {
 		const quoteChannel = await interaction.guild.channels.cache.get(quoteChannelId);
 		await quoteChannel.send({ embeds: [quoteEmbed] });
