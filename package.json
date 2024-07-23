@@ -26,6 +26,7 @@
 	],
 	"author": "ArkenStorm",
 	"license": "ISC",
+	"type": "module",
 	"bugs": {
 		"url": "https://github.com/ArkenStorm/Praetor/issues"
 	},

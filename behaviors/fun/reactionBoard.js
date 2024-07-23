@@ -1,4 +1,5 @@
-const { EmbedBuilder } = require('discord.js');
+// const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
 
 const processAttachment = a => {
 	const mediaLink = a.split('.');
@@ -79,9 +80,12 @@ const configOptions = {
 	}
 }
 
-module.exports = {
+const global = false;
+const name = 'reactionBoard';
+
+export {
 	execute,
 	configOptions,
-	global: false,
-	name: 'reactionBoard'
+	global,
+	name
 };

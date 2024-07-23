@@ -89,11 +89,14 @@ const autocomplete = async (interaction) => {
 	await interaction.respond(['You believe in the illusion of choice?']);
 };
 
-module.exports = {
+const global = false;
+const name = 'tag';
+
+export {
 	data,
 	execute,
 	autocomplete,
-	global: false,
-	name: 'tag',
+	global,
+	name,
 	showTag
 };

@@ -3,9 +3,10 @@ import path from 'node:path';
 // const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 import { Client, GatewayIntentBits, Partials, Collection } from 'discord.js';
 // const { token } = require('./auth.json');
-import { token } from './auth.json';
+import auth from './auth.json' with { type: "json"};
 // const { getFiles, getFilepaths, logError } = require('./utils');
-import { getFiles, getFilepaths, logError } from './utils';
+import { getFiles, getFilepaths, logError } from './utils.js';
+import { fileURLToPath, URL } from 'node:url';
 
 const clientOptions = {
 	intents: [
@@ -36,11 +37,13 @@ const client = new Client(clientOptions);
 
 client.commands = new Collection();
 
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+
 // Set up commands
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = getFilepaths(commandsPath);
 for (const filepath of commandFiles) {
-	const command = require(filepath);
+	const command = import(filepath);
 	if ('data' in command && 'execute' in command) {
 		client.commands.set(command.data.name, command);
 	} else {
@@ -65,4 +68,4 @@ process.on('unhandledRejection', err => logError(client, err));
 // last ditch error handling
 process.on('uncaughtException', err => logError(client, err));
 
-client.login(token);
+client.login(auth.token);

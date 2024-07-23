@@ -13,13 +13,16 @@ const handleError = async (interaction, error, message = 'There was an error exe
 	}
 };
 
-module.exports = {
-	name: Events.MessageCreate,
-	async execute(message) {
-		if (!message.content.startsWith('!')) { return; }
-		if (message.inGuild()) {
-			// get guild config, check if tags (and any other future necessary ones) are enabled, otherwise just return
-			showTag(message);
-		}
+const name = Events.MessageCreate;
+const execute = async (message) => {
+	if (!message.content.startsWith('!')) { return; }
+	if (message.inGuild()) {
+		// get guild config, check if tags (and any other future necessary ones) are enabled, otherwise just return
+		showTag(message);
 	}
+}
+
+export {
+	name,
+	execute
 };

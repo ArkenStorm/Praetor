@@ -6,7 +6,7 @@ import path from 'node:path';
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 
 
-const getFiles = dir => getFilepaths(dir).map(p => require(p));
+const getFiles = dir => getFilepaths(dir).map(p => import(p));
 
 const getFilepaths = dir => {
 	const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -96,7 +96,7 @@ const isValidHexCode = str => /^#[0-9A-F]{6}$/i.test(str);
 // instead of interaction, destructure the client from a generic object? It would only work with things that have a client property, but that's fine
 const getGuild = async interaction => await interaction.client.db.get(`guilds[${interaction.guildId}]`);
 
-module.exports = {
+export {
 	getFiles,
 	getFilepaths,
 	getFunctionalities,

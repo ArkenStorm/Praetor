@@ -107,9 +107,12 @@ const execute = async interaction => {
  * 	}
  */
 
-module.exports = {
+const global = true;
+const name = 'config';
+
+export {
 	data,
 	execute,
-	global: true,
-	name: 'config'
+	global,
+	name
 };

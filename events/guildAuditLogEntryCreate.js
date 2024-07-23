@@ -8,17 +8,20 @@ const handleError = async (interaction, error, message = 'There was an error exe
 	console.error(error);
 };
 
-module.exports = {
-	name: Events.GuildAuditLogEntryCreate,
-	async execute(auditLog) {
-		try {
-			const { action, executorId, targetId } = auditLog;
+const name = Events.GuildAuditLogEntryCreate;
+const execute = async (auditLog) => {
+	try {
+		const { action, executorId, targetId } = auditLog;
 
-            if (action === AuditLogEvent.MessageDelete) {
-                // do the stuff
-            }
-		} catch (error) {
-			handleError(interaction, error);
+		if (action === AuditLogEvent.MessageDelete) {
+			// do the stuff
 		}
+	} catch (error) {
+		handleError(interaction, error);
 	}
+}
+
+export {
+	name,
+	execute
 };

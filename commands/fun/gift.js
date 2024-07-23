@@ -65,10 +65,13 @@ const execute = async interaction => {
 
 const autocomplete = async interaction => {};
 
-module.exports = {
+const global = false;
+const name = 'gift';
+
+export {
 	data,
 	execute,
 	autocomplete,
-	global: false,
-	name: 'gift',
+	global,
+	name
 };

@@ -20,8 +20,8 @@ const startDatabase = async path => {
 	// ).write();
 
 	return db;
-};
+}
 
-module.exports = {
+export {
 	startDatabase
 };

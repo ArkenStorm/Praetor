@@ -31,10 +31,13 @@ const configOptions = {
 	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, etc.>, validation: <func> }
 };
 
-module.exports = {
+const global = false;
+const name = 'role';
+
+export {
 	data,
 	execute,
 	configOptions,
-	global: false,
-	name: 'role'
+	global,
+	name
 };

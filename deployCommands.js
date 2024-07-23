@@ -94,6 +94,6 @@ const loadCommands = (async () => {
 
 loadCommands();
 
-module.exports = {
+export {
 	loadCommands
 };

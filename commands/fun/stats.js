@@ -215,10 +215,13 @@ const autocomplete = async interaction => {
 	await interaction.respond(filtered);
 };
 
-module.exports = {
+const global = true;
+const name = 'stats';
+
+export {
 	data,
 	execute,
 	autocomplete,
-	global: true,
-	name: 'stats'
+	global,
+	name
 };

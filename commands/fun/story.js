@@ -58,10 +58,13 @@ const onSubmit = async interaction => {
 	await interaction.editReply('Story recorded!');
 };
 
-module.exports = {
+const global = false;
+const name = 'story';
+
+export {
 	data,
 	execute,
 	onSubmit,
-	global: false,
-	name: 'story'
+	global,
+	name
 };

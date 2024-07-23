@@ -58,10 +58,13 @@ const configOptions = {
 	}
 };
 
-module.exports = {
+const global = false;
+const name = 'quote';
+
+export {
 	data,
 	execute,
 	configOptions,
-	global: false,
-	name: 'quote'
+	global,
+	name
 };
