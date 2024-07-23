@@ -1,9 +1,6 @@
-// const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
-// const { exec } = require('child_process');
 import { exec } from 'child_process';
-// const { logError } = require('../../utils');
-import { logError } from '../../utils';
+import { logError } from '../../utils.js';
 
 const data = new SlashCommandBuilder()
 	.setName('git')

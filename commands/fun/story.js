@@ -1,7 +1,5 @@
-// const { ActionRowBuilder, EmbedBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 import { ActionRowBuilder, EmbedBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
-// const { getGuild } = require('../../utils');
-import { getGuild } from '../../utils';
+import { getGuild } from '../../utils.js';
 
 const data = new SlashCommandBuilder()
 	.setName('story')

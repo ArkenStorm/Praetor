@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+import { SlashCommandBuilder } from 'discord.js';
 
 const data = new SlashCommandBuilder()
 	.setName('gift')
@@ -32,7 +32,7 @@ const data = new SlashCommandBuilder()
 	)
 	.addSubcommand(subcommand =>
 		subcommand.setName('claim')
-			.setDescription('Remove an item from another user\'s list, unbeknownst to them. This signifies that you will be the one to give them this gift.')
+			.setDescription('Anonymously remove an item from another user\'s list, setting yourself as the gifter.')
 			.addUserOption(option =>
 				option.setName('user')
 					.setDescription('The user whose gift list you want to claim from')

@@ -1,12 +1,8 @@
-// const path = require('node:path');
 import path from 'node:path';
-// const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 import { Client, GatewayIntentBits, Partials, Collection } from 'discord.js';
-// const { token } = require('./auth.json');
 import auth from './auth.json' with { type: "json"};
-// const { getFiles, getFilepaths, logError } = require('./utils');
 import { getFiles, getFilepaths, logError } from './utils.js';
-import { fileURLToPath, URL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const clientOptions = {
 	intents: [
@@ -37,13 +33,13 @@ const client = new Client(clientOptions);
 
 client.commands = new Collection();
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Set up commands
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = getFilepaths(commandsPath);
 for (const filepath of commandFiles) {
-	const command = import(filepath);
+	const command = await import(pathToFileURL(filepath));
 	if ('data' in command && 'execute' in command) {
 		client.commands.set(command.data.name, command);
 	} else {
@@ -53,7 +49,7 @@ for (const filepath of commandFiles) {
 
 // Set up event listeners
 const eventsPath = path.join(__dirname, 'events');
-const eventsFiles = getFiles(eventsPath);
+const eventsFiles = await getFiles(eventsPath);
 for (const event of eventsFiles) {
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));

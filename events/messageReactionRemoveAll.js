@@ -1,4 +1,3 @@
-// const { Events } = require('discord.js');
 import { Events } from 'discord.js';
 
 const name = Events.MessageReactionRemoveAll;

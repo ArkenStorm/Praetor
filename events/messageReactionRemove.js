@@ -1,5 +1,5 @@
-const { Events } = require('discord.js');
-const { execute: reactionBoardExecute } = require('../behaviors/reactionBoard');
+import { Events } from 'discord.js';
+import { execute as reactionBoardExecute } from '../behaviors/fun/reactionBoard.js';
 
 const name = Events.MessageReactionAdd;
 const execute = async (reaction) => {

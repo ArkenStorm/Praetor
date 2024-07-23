@@ -1,9 +1,6 @@
-// const { Events } = require('discord.js');
 import { Events } from 'discord.js';
-// const { startDatabase } = require('../database/db');
-import { startDatabase } from '../database/db';
-// const { logMessage } = require('../utils');
-import { logMessage } from '../utils';
+import { startDatabase } from '../database/db.js';
+import { logMessage } from '../utils.js';
 
 const name = Events.ClientReady;
 const once = true;

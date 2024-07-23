@@ -1,12 +1,10 @@
-// const fs = require('node:fs');
 import fs from 'node:fs';
-// const path = require('node:path');
 import path from 'node:path';
-// const { EmbedBuilder, PermissionsBitField  } = require('discord.js');
+import { pathToFileURL } from 'node:url';
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 
 
-const getFiles = dir => getFilepaths(dir).map(p => import(p));
+const getFiles = async dir => await Promise.all(getFilepaths(dir).map(async p => await import(pathToFileURL(p))));
 
 const getFilepaths = dir => {
 	const files = fs.readdirSync(dir, { withFileTypes: true });

@@ -1,9 +1,6 @@
-// const { Events } = require('discord.js');
 import { Events } from 'discord.js';
-// const { getGuild, logError } = require('../utils');
-import { logError } from '../utils';
-// const { showTag } = require('../commands/fun/tag');
-import { showTag } from '../commands/fun/tag';
+import { logError } from '../utils.js';
+import { showTag } from '../commands/fun/tag.js';
 
 const handleError = async (interaction, error, message = 'There was an error executing this command') => {
 	logError(interaction.client, error, interaction);

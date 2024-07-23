@@ -1,7 +1,5 @@
-// const { SlashCommandBuilder } = require('discord.js');
 import { SlashCommandBuilder } from 'discord.js';
-// const { getFunctionalities } = require('../../utils');
-import { getFunctionalities } from '../../utils';
+import { getFunctionalities } from '../../utils.js';
 
 const data = new SlashCommandBuilder()
 	.setName('config')
