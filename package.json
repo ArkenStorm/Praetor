@@ -32,7 +32,7 @@
 	},
 	"homepage": "https://github.com/ArkenStorm/Praetor#readme",
 	"dependencies": {
-		"discord.js": "^14.15.3",
+		"discord.js": "^14.19.3",
 		"lowdb": "^7.0.0"
 	},
 	"devDependencies": {

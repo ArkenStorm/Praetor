@@ -63,8 +63,8 @@ const logError = (client, err, interaction) => {
 		.addFields(fields);
 
 	// create abstracted function for getting channels (and other things), including error handling with partials and fetching and stuff?
-	const errorChannel = client.guilds.cache.get('383889230704803851').channels.cache.get('1058289461357727785');
-	errorChannel.send({ embeds: [errorEmbed] });
+	const errorChannel = client.guilds.cache.get('383889230704803851')?.channels.cache.get('1058289461357727785');
+	errorChannel?.send({ embeds: [errorEmbed] });
 };
 
 const logMessage = async (client, message) => {
@@ -89,6 +89,10 @@ const timecodeFormats = {
 	'dynamic': 'R'
 };
 
+/**
+ * @param {number} timestamp
+ * @param {timecodeFormats} format
+ */
 const createTimecode = (timestamp, format) => `<t:${Math.floor(timestamp / 1000)}:${timecodeFormats[format]}>`;
 const isValidHexCode = str => /^#[0-9A-F]{6}$/i.test(str);
 

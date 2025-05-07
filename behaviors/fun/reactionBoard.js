@@ -34,7 +34,7 @@ const applyReactionBoardMessage = async (reaction, config) => {
 	const reactChannelId = config[reaction.emoji.name].channelId;
 	const reactChannel = await message.guild.channels.fetch(reactChannelId);
 	if (!reactChannel) { return; }
-	
+
 	const embed = await generateEmbed(reaction, message);
 	if (!embed) { return; }
 

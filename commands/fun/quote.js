@@ -33,7 +33,7 @@ const execute = async interaction => {
 		.setAuthor({ name: interaction.member.displayName, iconURL: interaction.member.displayAvatarURL() })
 		.setDescription(quote)
 		.setFooter({ text: `-${speakerOfTheQuote}` });
-	
+
 	const quoteChannelId = (await getGuild(interaction))?.config?.quoteChannelId;
 	if (quoteChannelId) {
 		const quoteChannel = await interaction.guild.channels.cache.get(quoteChannelId);
