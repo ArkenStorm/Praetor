@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { getGuild } from '../../utils.js';
+import { getGuild } from '../../utils.ts';
 
 const data = new SlashCommandBuilder()
 	.setName('tag')

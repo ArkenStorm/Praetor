@@ -1,5 +1,5 @@
 import { ActionRowBuilder, EmbedBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
-import { getGuild } from '../../utils.js';
+import { getGuild } from '../../utils.ts';
 
 const data = new SlashCommandBuilder()
 	.setName('story')

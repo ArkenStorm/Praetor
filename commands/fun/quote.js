@@ -1,5 +1,5 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import { getGuild, isValidHexCode } from '../../utils.js';
+import { getGuild, isValidHexCode } from '../../utils.ts';
 
 const data = new SlashCommandBuilder()
 	.setName('quote')

@@ -1,6 +1,6 @@
 import { Events } from 'discord.js';
 import { startDatabase } from '../database/db.js';
-import { logMessage } from '../utils.js';
+import { logMessage } from '../utils.ts';
 
 const name = Events.ClientReady;
 const once = true;

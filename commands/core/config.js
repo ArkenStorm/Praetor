@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { getFunctionalities } from '../../utils.js';
+import { getFunctionalities } from '../../utils.ts';
 
 const data = new SlashCommandBuilder()
 	.setName('config')

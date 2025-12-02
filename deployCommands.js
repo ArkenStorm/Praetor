@@ -1,6 +1,6 @@
 import { REST, Routes } from 'discord.js';
 import { clientId, token } from './auth.json';
-import { getFiles } from './utils.js';
+import { getFiles } from './utils.ts';
 import { startDatabase } from './database/db';
 import path from 'node:path';
 const arkchatGuildId = '383889230704803851';

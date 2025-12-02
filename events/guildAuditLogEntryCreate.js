@@ -1,5 +1,5 @@
 import { AuditLogEvent, Events } from 'discord.js';
-import { logError } from '../utils.js';
+import { logError } from '../utils.ts';
 
 const handleError = async (interaction, error, message = 'There was an error executing this command') => {
 	logError(interaction.client, error, interaction);

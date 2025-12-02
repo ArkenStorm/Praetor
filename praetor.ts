@@ -1,14 +1,17 @@
+/// <reference path="./praetor.d.ts" />
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js';
 import type { ClientOptions } from 'discord.js';
+import { Low } from 'lowdb';
 
-import { getFiles, getFilepaths, logError } from './utils.js';
+import { getFiles, getFilepaths, logError } from './utils.ts';
 import auth from './auth.json' with { type: 'json' };
 
 class PraetorClient extends Client {
 	commands: Collection<string, Command>;
+	db: Low<any>;
 
 	constructor(options: ClientOptions) {
 		super(options);
@@ -55,7 +58,7 @@ for (const filepath of commandFiles) {
 
 // Set up event listeners
 const eventsPath = path.join(__dirname, 'events');
-const eventsFiles = await getFiles(eventsPath);
+const eventsFiles = await getFiles(eventsPath) as Event[];
 for (const event of eventsFiles) {
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
@@ -65,9 +68,9 @@ for (const event of eventsFiles) {
 }
 
 // default promise rejection handling
-process.on('unhandledRejection', err => logError(client, err));
+process.on('unhandledRejection', (err: Error) => logError(client, err));
 
 // last ditch error handling
-process.on('uncaughtException', err => logError(client, err));
+process.on('uncaughtException', (err: Error) => logError(client, err));
 
 client.login(auth.token);

@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import { logError } from '../utils.js';
+import { logError } from '../utils.ts';
 import { showTag } from '../commands/fun/tag.js';
 
 const handleError = async (interaction, error, message = 'There was an error executing this command') => {

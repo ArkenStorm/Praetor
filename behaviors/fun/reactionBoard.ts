@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { Embed, EmbedBuilder } from 'discord.js';
 
 const processAttachment = a => {
 	const mediaLink = a.split('.');
@@ -7,13 +7,14 @@ const processAttachment = a => {
 	return media ? a : null;
 }
 
-const generateEmbed = async (reaction, message) => {
+const generateEmbed = (reaction, message): EmbedBuilder | null => {
 	let image = message.attachments.size > 0 ? processAttachment(message.attachments.first().url) : null;
+	if (!image && message.cleanContent.length === 0) { return null; } // no reaction stuff for empty messages
+
 	if (!image && message.embeds.length > 0) {
 		image = message.embeds[0].image?.url || message.embeds[0].thumbnail?.url;
 	}
 
-	if (!image && message.cleanContent.length === 0) { return null; } // no reaction stuff for empty messages
 
 	return new EmbedBuilder()
 		.setColor('#f1c40f')
@@ -35,7 +36,7 @@ const applyReactionBoardMessage = async (reaction, config) => {
 	const reactChannel = await message.guild.channels.fetch(reactChannelId);
 	if (!reactChannel) { return; }
 
-	const embed = await generateEmbed(reaction, message);
+	const embed = generateEmbed(reaction, message);
 	if (!embed) { return; }
 
 	// if the message is already in the reactionBoard, edit it

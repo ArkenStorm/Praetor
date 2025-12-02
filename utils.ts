@@ -3,17 +3,18 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 
+const getFiles = async (dir: string): Promise<DataFile[]> => await Promise.all(
+	getFilepaths(dir).map(async (p: string) => await import(pathToFileURL(p).toString()))
+);
 
-const getFiles = async dir => await Promise.all(getFilepaths(dir).map(async p => await import(pathToFileURL(p))));
-
-const getFilepaths = dir => {
+const getFilepaths = (dir: string) => {
 	const files = fs.readdirSync(dir, { withFileTypes: true });
 	const paths = files.map(file => {
 		const filepath = path.join(dir, file.name);
 		if (file.isDirectory()) {
 			return getFilepaths(filepath);
 		}
-		// Shouldn't need to worry about any non-js files here
+		// Shouldn't need to worry about any non-ts files here
 		return filepath;
 	});
 
@@ -21,7 +22,7 @@ const getFilepaths = dir => {
 };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const getFunctionalities = functionality => getFiles(path.join(__dirname, functionality));
+const getFunctionalities = (functionality: string) => getFiles(path.join(__dirname, functionality));
 
 // general permission checking function; use permission bitfield?
 const checkPermission = (interaction, permission) => {
@@ -40,7 +41,7 @@ const checkPermission = (interaction, permission) => {
 // always allow my user id
 // fp.split('/').at(-1).slice(0, -3); // for file names
 
-const logError = (client, err, interaction) => {
+const logError = (client: PraetorClient, err: Error, interaction?: PraetorInteraction) => {
 	console.error(err);
 	const fields = [];
 
@@ -49,7 +50,14 @@ const logError = (client, err, interaction) => {
 			fields.push({ name: 'Command:', value: interaction.commandName });
 		}
 		fields.push(
-			{ name: 'Guilty User:', value: interaction.member?.displayName || interaction.user.username },
+			{
+				name: 'Guilty User:',
+				value: (
+					'displayName' in interaction.member ?
+					interaction.member.displayName :
+					interaction.member?.nick
+				) || interaction.user.username
+			},
 			{ name: 'Channel:', value: interaction.channel.name },
 			{ name: 'Guild:', value: interaction.guild.name || 'DM' },
 			{ name: 'Created At:', value: createTimecode(interaction.createdTimestamp, 'datetime') }
@@ -64,18 +72,22 @@ const logError = (client, err, interaction) => {
 
 	// create abstracted function for getting channels (and other things), including error handling with partials and fetching and stuff?
 	const errorChannel = client.guilds.cache.get('383889230704803851')?.channels.cache.get('1058289461357727785');
-	errorChannel?.send({ embeds: [errorEmbed] });
+	if (errorChannel?.isTextBased()) {
+		errorChannel.send({ embeds: [errorEmbed] });
+	}
 };
 
-const logMessage = async (client, message) => {
+const logMessage = async (client: PraetorClient, message: string) => {
 	const messageEmbed = new EmbedBuilder()
 		.setColor('#19a83f')
 		.setTitle('System Notification')
 		.addFields({ name: 'Info:', value: message });
 
 	// create abstracted function for getting channels (and other things), including error handling with partials and fetching and stuff?
-	const errorChannel = client.guilds.cache.get('383889230704803851').channels.cache.get('1058289461357727785');
-	errorChannel.send({ embeds: [messageEmbed] });
+	const errorChannel = client.guilds.cache.get('383889230704803851')?.channels.cache.get('1058289461357727785');
+	if (errorChannel?.isTextBased()) {
+		errorChannel.send({ embeds: [messageEmbed] });
+	}
 };
 
 // function to create a timecode
@@ -89,15 +101,13 @@ const timecodeFormats = {
 	'dynamic': 'R'
 };
 
-/**
- * @param {number} timestamp
- * @param {timecodeFormats} format
- */
-const createTimecode = (timestamp, format) => `<t:${Math.floor(timestamp / 1000)}:${timecodeFormats[format]}>`;
-const isValidHexCode = str => /^#[0-9A-F]{6}$/i.test(str);
+type TimecodeFormat = keyof typeof timecodeFormats;
+
+const createTimecode = (timestamp: number, format: TimecodeFormat) => `<t:${Math.floor(timestamp / 1000)}:${timecodeFormats[format]}>`;
+const isValidHexCode = (str: string) => /^#[0-9A-F]{6}$/i.test(str);
 
 // instead of interaction, destructure the client from a generic object? It would only work with things that have a client property, but that's fine
-const getGuild = async interaction => interaction.client.db.data.guilds[interaction.guildId];
+const getGuild = async (interaction: PraetorInteraction) => interaction.client.db.data.guilds[interaction.guildId];
 
 export {
 	getFiles,
