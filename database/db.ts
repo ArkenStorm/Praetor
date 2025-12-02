@@ -1,6 +1,6 @@
 import { JSONFilePreset } from 'lowdb/node';
 
-const startDatabase = async path => {
+export const startDatabase = async path => {
 	const defaultData = {
 		guilds: {},
 		statistics: {}
@@ -10,7 +10,3 @@ const startDatabase = async path => {
 
 	return db;
 }
-
-export {
-	startDatabase
-};

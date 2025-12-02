@@ -1,8 +1,12 @@
-import { REST, Routes } from 'discord.js';
-import { clientId, token } from './auth.json';
-import { getFiles } from './utils.ts';
-import { startDatabase } from './database/db';
 import path from 'node:path';
+import { REST, Routes } from 'discord.js';
+
+import { getFiles } from './utils.ts';
+import { startDatabase } from './database/db.js';
+
+import authConfig from './auth.json' with { type: 'json' };
+const { clientId, token } = authConfig;
+
 const arkchatGuildId = '383889230704803851';
 // does clientId need to be dynamic with sharding?
 
@@ -11,7 +15,7 @@ const cliArgs = process.argv.slice(2);
 const getCommandDetails = async () => {
 	const commands = [];
 	const baseCommandPath = path.join(__dirname, 'commands');
-	const commandFiles = getFiles(baseCommandPath);
+	const commandFiles = await getFiles(baseCommandPath) as Command[];
 	let guildId = '';
 	const deployGlobally = cliArgs.includes('-g') || cliArgs.includes('--global');
 
@@ -69,7 +73,7 @@ const getCommandDetails = async () => {
  * 		effect: resets Arkchat guild-specific commands
  */
 const rest = new REST({ version: '10' }).setToken(token);
-const loadCommands = (async () => {
+export const loadCommands = (async () => {
 	const { route, commands } = await getCommandDetails();
 	if (!route || !commands) {
 		return;
@@ -79,7 +83,7 @@ const loadCommands = (async () => {
 		const data = await rest.put(
 			route,
 			{ body: commands }
-		);
+		) as Array<any>;
 
 		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
@@ -88,7 +92,3 @@ const loadCommands = (async () => {
 });
 
 loadCommands();
-
-export {
-	loadCommands
-};
