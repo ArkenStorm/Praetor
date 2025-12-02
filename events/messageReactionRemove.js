@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import { execute as reactionBoardExecute } from '../behaviors/fun/reactionBoard.js';
+import { execute as reactionBoardExecute } from '../behaviors/fun/reactionBoard.ts';
 
 const name = Events.MessageReactionAdd;
 const execute = async (reaction) => {

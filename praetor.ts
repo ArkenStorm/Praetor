@@ -1,15 +1,27 @@
 import path from 'node:path';
-import { Client, GatewayIntentBits, Partials, Collection } from 'discord.js';
-import auth from './auth.json' with { type: "json"};
-import { getFiles, getFilepaths, logError } from './utils.js';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const clientOptions = {
+import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js';
+import type { ClientOptions } from 'discord.js';
+
+import { getFiles, getFilepaths, logError } from './utils.js';
+import auth from './auth.json' with { type: 'json' };
+
+class PraetorClient extends Client {
+	commands: Collection<string, Command>;
+
+	constructor(options: ClientOptions) {
+		super(options);
+		this.commands = new Collection<string, Command>();
+	}
+}
+
+const clientOptions: ClientOptions = {
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildModeration,
-		GatewayIntentBits.GuildEmojisAndStickers,
+		GatewayIntentBits.GuildExpressions,
 		GatewayIntentBits.GuildIntegrations,
 		GatewayIntentBits.GuildWebhooks,
 		GatewayIntentBits.GuildInvites,
@@ -29,9 +41,7 @@ const clientOptions = {
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 };
 
-const client = new Client(clientOptions);
-
-client.commands = new Collection();
+const client = new PraetorClient(clientOptions);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -39,12 +49,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = getFilepaths(commandsPath);
 for (const filepath of commandFiles) {
-	const command = await import(pathToFileURL(filepath));
-	if ('data' in command && 'execute' in command) {
-		client.commands.set(command.data.name, command);
-	} else {
-		console.log(`[WARNING] The command at ${filepath} is missing a required "data" or "execute" property.`);
-	}
+	const command = await import(pathToFileURL(filepath).toString());
+	client.commands.set(command.data.name, command);
 }
 
 // Set up event listeners

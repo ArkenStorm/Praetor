@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+	"module": "nodenext",
+	"target": "es2024",
+	"moduleResolution": "nodenext",
+	"esModuleInterop": true,
+	"forceConsistentCasingInFileNames": true,
+  },
+  "include": ["./**/*.ts", "./**/*.d.ts"]
+}

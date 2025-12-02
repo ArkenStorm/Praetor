@@ -7,13 +7,13 @@
 		"restart": "pm2 restart praetor",
 		"stop": "pm2 delete praetor",
 		"start": "pm2 start praetor --time",
-		"dev": "pm2 start --watch --ignore-watch='node_modules' --watch='**/*.js' praetor --no-daemon",
+		"pm2-dev": "pm2 start --watch --ignore-watch='node_modules' --watch='**/*.ts' praetor --no-daemon",
 		"logs": "pm2 logs",
 		"deploy-testing": "node deployCommands.js",
 		"deploy-global": "node deployCommands.js -g",
 		"deploy-guild": "node deployCommands.js -G",
 		"deploy-reset": "node deployCommands.js -r",
-		"run-dev": "node praetor.js"
+		"dev": "node praetor.ts"
 	},
 	"repository": {
 		"type": "git",
@@ -36,6 +36,7 @@
 		"lowdb": "^7.0.0"
 	},
 	"devDependencies": {
-		"eslint": "^9.39.1"
+		"eslint": "^9.39.1",
+		"typescript": "^5.9.3"
 	}
 }

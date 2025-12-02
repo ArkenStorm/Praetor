@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import { execute as reactionBoardExecute } from '../behaviors/fun/reactionBoard.js';
+import { execute as reactionBoardExecute } from '../behaviors/fun/reactionBoard.ts';
 // import { execute as autoreactExecute } from '../behaviors/fun/autoreact';
 
 // if reactionBoard is enabled, always do it
