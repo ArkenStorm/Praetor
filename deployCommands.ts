@@ -1,7 +1,7 @@
 import { REST, Routes } from 'discord.js';
 import path from 'node:path';
 import { ARKEN_ASYLUM_GUILD_ID } from './constants/arken.ts';
-import type { Command } from './types/command.type.ts';
+import type { CommandSetup } from './types/command.type.ts';
 import type { GuildConfig } from './types/db.type.ts';
 
 import { startDatabase } from './database/db.js';
@@ -12,9 +12,9 @@ const { clientId, token } = authConfig; // does clientId need to be dynamic with
 
 const cliArgs = process.argv.slice(2);
 const getCommandDetails = async () => {
-	const commands: ReturnType<Command['data']['toJSON']>[] = [];
+	const commands: ReturnType<CommandSetup['data']['toJSON']>[] = [];
 	const baseCommandPath = path.join(__dirname, 'commands');
-	const commandFiles = await getFiles(baseCommandPath) as Command[];
+	const commandFiles = await getFiles(baseCommandPath) as CommandSetup[];
 	let guildId = '';
 	const deployGlobally = cliArgs.includes('-g') || cliArgs.includes('--global');
 

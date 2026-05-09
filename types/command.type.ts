@@ -6,12 +6,12 @@ export interface DataFile {
 	execute: Function;
 }
 
-export interface Command extends DataFile {
+export interface CommandSetup extends DataFile {
 	data: SlashCommandBuilder;
 	global?: boolean;
 }
 
-export interface Event extends DataFile {
+export interface EventSetup extends DataFile {
 	once: boolean;
 }
 

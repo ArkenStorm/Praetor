@@ -1,12 +1,12 @@
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { Event } from './types.ts';
+import { fileURLToPath } from 'node:url';
+import type { CommandSetup, EventSetup } from './types/command.type.ts';
 
 import { type ClientOptions, GatewayIntentBits, Partials } from 'discord.js';
 
 import auth from './auth.json' with { type: 'json' };
 import { PraetorClient } from './praetorClient.ts';
-import { getFilepaths, getFiles, logError } from './utils.ts';
+import { getFiles, logError } from './utils.ts';
 
 const clientOptions: ClientOptions = {
 	intents: [
@@ -39,15 +39,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Set up commands
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = getFilepaths(commandsPath);
-for (const filepath of commandFiles) {
-	const command = await import(pathToFileURL(filepath).toString());
+const commandFiles = await getFiles(commandsPath) as CommandSetup[];
+for (const command of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
 // Set up event listeners
 const eventsPath = path.join(__dirname, 'events');
-const eventsFiles = await getFiles(eventsPath) as Event[];
+const eventsFiles = await getFiles(eventsPath) as EventSetup[];
 for (const event of eventsFiles) {
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
