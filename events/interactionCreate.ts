@@ -1,4 +1,4 @@
-import { Events, type Interaction } from 'discord.js';
+import { Events, type Interaction, MessageFlags } from 'discord.js';
 import type { PraetorClient } from '../praetorClient.ts';
 import { logError } from '../utils.ts';
 
@@ -15,7 +15,7 @@ const handleError = async (
 	if ('deferred' in interaction && interaction.deferred) {
 		await (interaction as any).editReply(message);
 	} else if (interaction.isRepliable()) {
-		await interaction.reply({ content: message, ephemeral: true });
+		await interaction.reply({ content: message, flags: MessageFlags.Ephemeral });
 	}
 };
 

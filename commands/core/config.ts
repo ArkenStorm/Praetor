@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, MessageFlags, SlashCommandBuilder } from 'discord.js';
 import type { PraetorClient } from '../../praetorClient.ts';
 import type { CommandSetup } from '../../types/command.type.ts';
 import type { GuildConfig } from '../../types/db.type.ts';
@@ -81,7 +81,7 @@ const subcommandFunctions = {
 };
 
 const execute = async (interaction: ConfigInteraction) => {
-	await interaction.deferReply({ ephemeral: true });
+	await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 	const subcommand = interaction.options.getSubcommand() as keyof typeof subcommandFunctions;
 	subcommandFunctions[subcommand](interaction);
 };

@@ -1,4 +1,4 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { getGuild } from '../../utils.ts';
 
 const name = 'quote';
@@ -21,7 +21,7 @@ const data = new SlashCommandBuilder()
 	);
 
 const execute = async interaction => {
-	await interaction.deferReply({ ephemeral: true });
+	await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 	const speakerOfTheQuote = interaction.options.getString('who');
 	let quote = interaction.options.getString('quote');
 	if (!quote.startsWith('"')) {

@@ -13,10 +13,16 @@ const data = new SlashCommandBuilder()
 
 const execute = async (interaction) => {
 	if (interaction.user.id !== '358333674514677760') {
-		await interaction.reply({ content: 'Sorry, this command is reserved for the bot owner only', ephemeral: true });
+		await interaction.reply({
+			content: 'Sorry, this command is reserved for the bot owner only',
+			flags: MessageFlags.Ephemeral,
+		});
 		return;
 	}
-	await interaction.reply({ content: 'Git process started; Praetor will be online again shortly.', ephemeral: true });
+	await interaction.reply({
+		content: 'Git process started; Praetor will be online again shortly.',
+		flags: MessageFlags.Ephemeral,
+	});
 	exec('git pull && npm install && npm run restart', async error => {
 		if (error) {
 			logError(interaction.client, error, interaction);

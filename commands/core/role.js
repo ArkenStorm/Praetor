@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 
 const data = new SlashCommandBuilder()
 	.setName('role')
@@ -23,7 +23,7 @@ const data = new SlashCommandBuilder()
 	);
 
 const execute = async interaction => {
-	await interaction.reply({ content: 'Hello', ephemeral: true });
+	await interaction.reply({ content: 'Hello', flags: MessageFlags.Ephemeral });
 };
 
 const global = false;

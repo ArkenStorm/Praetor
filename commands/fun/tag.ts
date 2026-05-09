@@ -3,6 +3,7 @@ import {
 	ChatInputCommandInteraction,
 	InteractionContextType,
 	type Message,
+	MessageFlags,
 	SlashCommandBuilder,
 } from 'discord.js';
 import type { PraetorClient } from '../../praetorClient.ts';
@@ -91,7 +92,7 @@ const subcommandFunctions = {
 };
 
 const execute = async (interaction: TagInteraction) => {
-	await interaction.deferReply({ ephemeral: true });
+	await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 	const subcommand = interaction.options.getSubcommand() as keyof typeof subcommandFunctions;
 	subcommandFunctions[subcommand](interaction);
 };

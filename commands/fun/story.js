@@ -41,7 +41,7 @@ const execute = async interaction => {
 };
 
 const onSubmit = async interaction => {
-	await interaction.deferReply({ ephemeral: true });
+	await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 	const dialogueLines = [];
 	for (let i = 0; i < interaction.fields.fields.size; i++) {
 		const lineText = interaction.fields.getTextInputValue(`line${i}`);

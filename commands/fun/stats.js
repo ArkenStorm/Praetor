@@ -1,4 +1,4 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from 'discord.js';
 
 const data = new SlashCommandBuilder()
 	.setName('stats')
@@ -211,7 +211,7 @@ const subcommandFunctions = {
 };
 
 const execute = async interaction => {
-	await interaction.deferReply({ ephemeral: true });
+	await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 	subcommandFunctions[interaction.options.getSubcommand()](interaction);
 };
 
