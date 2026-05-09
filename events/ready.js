@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import { startDatabase } from '../database/db.js';
+import { startDatabase } from '../database/db.ts';
 import { logMessage } from '../utils.ts';
 
 const name = Events.ClientReady;
