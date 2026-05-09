@@ -9,6 +9,8 @@ export interface DataFile {
 export interface CommandSetup extends DataFile {
 	data: SlashCommandBuilder;
 	global?: boolean;
+	onSubmit?: (interaction: unknown) => Promise<void>;
+	autocomplete?: (interaction: unknown) => Promise<void>;
 }
 
 export interface EventSetup extends DataFile {
