@@ -1,5 +1,6 @@
 import { exec } from 'child_process';
 import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
+import { ARKEN_ID } from '../../constants/arken.ts';
 import { logError } from '../../utils.ts';
 
 const data = new SlashCommandBuilder()
@@ -12,7 +13,7 @@ const data = new SlashCommandBuilder()
 	);
 
 const execute = async (interaction) => {
-	if (interaction.user.id !== '358333674514677760') {
+	if (interaction.user.id !== ARKEN_ID) {
 		await interaction.reply({
 			content: 'Sorry, this command is reserved for the bot owner only',
 			flags: MessageFlags.Ephemeral,
