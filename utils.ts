@@ -1,18 +1,19 @@
-import { EmbedBuilder, GuildMember, PermissionsBitField } from 'discord.js';
+import { type APIEmbedField, EmbedBuilder, GuildMember, PermissionsBitField } from 'discord.js';
 import { type PathLike, readdirSync } from 'fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { ARKEN_ASYLUM_ERROR_CHANNEL_ID, ARKEN_ASYLUM_GUILD_ID } from './constants/arken.ts';
 import type { PraetorClient } from './praetorClient.ts';
 import type { DataFile, PraetorInteraction } from './types.ts';
 
-const getFiles = async (dir: PathLike): Promise<DataFile[]> =>
+export const getFiles = async (dir: PathLike): Promise<DataFile[]> =>
 	await Promise.all(
 		getFilepaths(dir).map(async (p: PathLike) => await import(pathToFileURL(p.toString()).toString())),
 	);
 
-const getFilepaths = (dir: PathLike) => {
+export const getFilepaths = (dir: PathLike): string[] => {
 	const files = readdirSync(dir, { withFileTypes: true });
-	const paths = files.map(file => {
+	const paths: (string | string[])[] = files.map(file => {
 		const filepath = path.join(dir.toString(), file.name);
 		if (file.isDirectory()) {
 			return getFilepaths(filepath);
@@ -21,14 +22,17 @@ const getFilepaths = (dir: PathLike) => {
 		return filepath;
 	});
 
-	return paths.flat(Infinity);
+	return paths.flat(Infinity) as string[];
 };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const getFunctionalities = (functionality: string) => getFiles(path.join(__dirname, functionality));
+export const getFunctionalities = (functionality: string) => getFiles(path.join(__dirname, functionality));
 
 // general permission checking function; use permission bitfield?
-const checkPermission = (interaction: PraetorInteraction, permission: keyof typeof PermissionsBitField.Flags) => {
+export const checkPermission = (
+	interaction: PraetorInteraction,
+	permission: keyof typeof PermissionsBitField.Flags,
+) => {
 	if (!interaction.member) {
 		return false; // not in a guild, not allowed
 	}
@@ -36,7 +40,11 @@ const checkPermission = (interaction: PraetorInteraction, permission: keyof type
 		console.error(`${permission} is not a valid DiscordJS permission.`);
 		return false;
 	}
-	if ((interaction.member as GuildMember).permissionsIn(interaction.channel).has(permission)) {
+	if (
+		interaction.channel
+		&& !interaction.channel.isDMBased()
+		&& (interaction.member as GuildMember).permissionsIn(interaction.channel).has(permission)
+	) {
 		console.log('idk yet');
 	}
 };
@@ -44,9 +52,9 @@ const checkPermission = (interaction: PraetorInteraction, permission: keyof type
 // always allow my user id
 // fp.split('/').at(-1).slice(0, -3); // for file names
 
-const logError = (client: PraetorClient, err: Error, interaction?: PraetorInteraction) => {
+export const logError = (client: PraetorClient, err: Error, interaction?: PraetorInteraction) => {
 	console.error(err);
-	const fields = [];
+	const fields: APIEmbedField[] = [];
 
 	if (interaction) {
 		if (interaction.isCommand()) {
@@ -55,18 +63,19 @@ const logError = (client: PraetorClient, err: Error, interaction?: PraetorIntera
 		fields.push(
 			{
 				name: 'Guilty User:',
-				value: (
-					'displayName' in interaction.member
-						? interaction.member.displayName
-						: interaction.member?.nick
-				) || interaction.user.username,
+				value: interaction.member && 'displayName' in interaction.member
+					? interaction.member.displayName
+					: (interaction.member?.nick ?? interaction.user.username),
 			},
-			{ name: 'Channel:', value: interaction.channel.name },
-			{ name: 'Guild:', value: interaction.guild.name || 'DM' },
+			{
+				name: 'Channel:',
+				value: (interaction.channel && 'name' in interaction.channel ? interaction.channel.name : null) ?? 'DM',
+			},
+			{ name: 'Guild:', value: interaction.guild?.name || 'DM' },
 			{ name: 'Created At:', value: createTimecode(interaction.createdTimestamp, 'datetime') },
 		);
 	}
-	fields.push({ name: 'Error:', value: err.stack || err });
+	fields.push({ name: 'Error:', value: err.stack || err.message });
 
 	const errorEmbed = new EmbedBuilder()
 		.setColor('#bf260b')
@@ -74,27 +83,31 @@ const logError = (client: PraetorClient, err: Error, interaction?: PraetorIntera
 		.addFields(fields);
 
 	// create abstracted function for getting channels (and other things), including error handling with partials and fetching and stuff?
-	const errorChannel = client.guilds.cache.get('383889230704803851')?.channels.cache.get('1058289461357727785');
+	const errorChannel = client.guilds.cache
+		.get(ARKEN_ASYLUM_GUILD_ID)?.channels.cache
+		.get(ARKEN_ASYLUM_ERROR_CHANNEL_ID);
 	if (errorChannel?.isTextBased()) {
 		errorChannel.send({ embeds: [errorEmbed] });
 	}
 };
 
-const logMessage = async (client: PraetorClient, message: string) => {
+export const logMessage = async (client: PraetorClient, message: string) => {
 	const messageEmbed = new EmbedBuilder()
 		.setColor('#19a83f')
 		.setTitle('System Notification')
 		.addFields({ name: 'Info:', value: message });
 
 	// create abstracted function for getting channels (and other things), including error handling with partials and fetching and stuff?
-	const errorChannel = client.guilds.cache.get('383889230704803851')?.channels.cache.get('1058289461357727785');
+	const errorChannel = client.guilds.cache
+		.get(ARKEN_ASYLUM_GUILD_ID)?.channels.cache
+		.get(ARKEN_ASYLUM_ERROR_CHANNEL_ID);
 	if (errorChannel?.isTextBased()) {
 		errorChannel.send({ embeds: [messageEmbed] });
 	}
 };
 
 // function to create a timecode
-const timecodeFormats = {
+export const timecodeFormats = {
 	date: 'd',
 	longdate: 'D',
 	time: 't',
@@ -106,11 +119,10 @@ const timecodeFormats = {
 
 type TimecodeFormat = keyof typeof timecodeFormats;
 
-const createTimecode = (timestamp: number, format: TimecodeFormat) =>
+export const createTimecode = (timestamp: number, format: TimecodeFormat) =>
 	`<t:${Math.floor(timestamp / 1000)}:${timecodeFormats[format]}>`;
-const isValidHexCode = (str: string) => /^#[0-9A-F]{6}$/i.test(str);
+export const isValidHexCode = (str: string) => /^#[0-9A-F]{6}$/i.test(str);
 
 // instead of interaction, destructure the client from a generic object? It would only work with things that have a client property, but that's fine
-const getGuild = async (interaction: PraetorInteraction) => interaction.client.db.data.guilds[interaction.guildId];
-
-export { createTimecode, getFilepaths, getFiles, getFunctionalities, getGuild, isValidHexCode, logError, logMessage };
+export const getGuild = async (interaction: PraetorInteraction) =>
+	interaction.client.db.data.guilds[interaction.guildId!];

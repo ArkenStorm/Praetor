@@ -3,7 +3,8 @@
     "indentWidth": 4,
     "useTabs": true,
     "quoteStyle": "preferSingle",
-    "quoteProps": "asNeeded"
+    "quoteProps": "asNeeded",
+    "binaryExpression.linePerExpression": true
   },
   "json": {
   },
