@@ -1,8 +1,6 @@
-import { EmbedBuilder, type Message, type MessageReaction } from 'discord.js';
-import type { PraetorClient } from '../../praetorClient.ts';
+import { EmbedBuilder, type Message } from 'discord.js';
+import type { PraetorReaction } from '../../types/command.type.ts';
 import type { ReactionBoardConfig } from '../../types/db.type.ts';
-
-type PraetorReaction = MessageReaction & { client: PraetorClient };
 
 const processAttachment = (a: string): string | null => {
 	const mediaLink = a.split('.');

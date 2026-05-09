@@ -1,5 +1,6 @@
-import { Events } from 'discord.js';
+import { Events, MessageReaction, PartialMessageReaction } from 'discord.js';
 import { execute as reactionBoardExecute } from '../behaviors/fun/reactionBoard.ts';
+import type { PraetorReaction } from '../types/command.type.ts';
 // import { execute as autoreactExecute } from '../behaviors/fun/autoreact';
 
 // if reactionBoard is enabled, always do it
@@ -7,12 +8,12 @@ import { execute as reactionBoardExecute } from '../behaviors/fun/reactionBoard.
 // if autoreact is enabled, make sure the reactedToMessage is not a bot message (no reactionBoard-ing bot messages)
 
 const name = Events.MessageReactionAdd;
-const execute = async (reaction) => {
+const execute = async (reaction: MessageReaction | PartialMessageReaction) => {
 	if (reaction.partial) {
 		const fullReaction = await reaction.fetch();
-		reactionBoardExecute(fullReaction);
+		reactionBoardExecute(fullReaction as PraetorReaction);
 	} else {
-		reactionBoardExecute(reaction);
+		reactionBoardExecute(reaction as PraetorReaction);
 	}
 };
 

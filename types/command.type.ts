@@ -1,4 +1,4 @@
-import type { Interaction, SlashCommandBuilder } from 'discord.js';
+import type { Interaction, MessageReaction, SlashCommandBuilder } from 'discord.js';
 import type { PraetorClient } from '../praetorClient.ts';
 
 export interface DataFile {
@@ -18,5 +18,9 @@ export interface EventSetup extends DataFile {
 }
 
 export type PraetorInteraction = Interaction & {
+	client: PraetorClient;
+};
+
+export type PraetorReaction = MessageReaction & {
 	client: PraetorClient;
 };
