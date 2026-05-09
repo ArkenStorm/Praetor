@@ -4,13 +4,12 @@ import { logMessage } from '../utils.ts';
 
 const name = Events.ClientReady;
 const once = true;
-const execute = (client) => {
-	console.log(`Ready! Logged in as ${client.user.tag}. Awaiting database connection...`);
-	startDatabase('./database/db.json').then(db => {
-		client.db = db;
-		console.log('All systems go.');
-		logMessage(client, 'Praetor is online.');
-	});
+const execute = async (client: PraetorClient) => {
+	console.log(`Ready! Logged in as ${client.user?.tag}. Awaiting database connection...`);
+	const db = await startDatabase('./database/db.json');
+	client.db = db;
+	console.log('All systems go.');
+	logMessage(client, 'Praetor is online.');
 }
 
 export {

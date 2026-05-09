@@ -11,7 +11,7 @@ import auth from './auth.json' with { type: 'json' };
 
 class PraetorClient extends Client {
 	commands: Collection<string, Command>;
-	db: Low<any>;
+	db!: Low<any>;
 
 	constructor(options: ClientOptions) {
 		super(options);
