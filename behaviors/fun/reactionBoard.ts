@@ -72,22 +72,7 @@ const execute = async reaction => {
 	applyReactionBoardMessage(reaction, config);
 };
 
-const configOptions = {
-	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, etc.>, validation: <func> }
-	threshold: {
-		type: Number,
-		validator: val => val > 1,
-	},
-	channelId: {
-		type: String,
-		// validator: val => val // test if it's a valid channelId or nah?
-	},
-	emojis: {
-		type: Array,
-	},
-};
-
 const global = false;
 const name = 'reactionBoard';
 
-export { configOptions, execute, global, name };
+export { execute, global, name };

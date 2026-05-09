@@ -26,11 +26,7 @@ const execute = async interaction => {
 	await interaction.reply({ content: 'Hello', ephemeral: true });
 };
 
-const configOptions = {
-	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, etc.>, validation: <func> }
-};
-
 const global = false;
 const name = 'role';
 
-export { configOptions, data, execute, global, name };
+export { data, execute, global, name };

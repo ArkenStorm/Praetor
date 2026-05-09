@@ -1,5 +1,10 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import type { PraetorClient } from '../../praetorClient.ts';
+import type { CommandSetup } from '../../types/command.type.ts';
+import type { GuildConfig } from '../../types/db.type.ts';
 import { getFunctionalities } from '../../utils.ts';
+
+type ConfigInteraction = ChatInputCommandInteraction & { client: PraetorClient };
 
 const data = new SlashCommandBuilder()
 	.setName('config')
@@ -17,35 +22,20 @@ const data = new SlashCommandBuilder()
 			.setDescription("View your server's config")
 	);
 
-// the heck are overrides for?!
-const defaultOptions = {
-	embedColor: '#2295d4',
-	channelId: '',
-	percentChance: 10,
-	minCount: 5,
-	overrides: {},
-	onlyUseOverrides: true,
-	emojis: ['star'],
-};
-
 // Requires every command/behavior to have a name
-const applyFunctionalityOptions = (functionalities, commands) => {
+const applyFunctionalityOptions = (functionalities: CommandSetup[], commands: NonNullable<GuildConfig['commands']>) => {
 	functionalities.forEach(f => {
-		const options = f.configOptions
-			? Object.keys(f.configOptions).reduce((acc, key) => acc[key] = defaultOptions[key], {})
-			: {};
-		if (!commands[f.name]) { // only initialize if it doesn't exist already
-			commands[f.name] = Object.assign({ enabled: false }, options);
-		}
+		const key = f.name as keyof typeof commands;
+		commands[key] ??= { enabled: false } as never;
 	});
 };
 
-const init = async interaction => {
-	if (!interaction.inGuild()) {
+const init = async (interaction: ConfigInteraction) => {
+	if (!interaction.inGuild() || !interaction.guild) {
 		await interaction.editReply('Configs cannot exist in DMs.');
 		return;
 	}
-	let guildConfig = await interaction.client.db.data.guilds[interaction.guild.id];
+	let guildConfig = interaction.client.db.data.guilds[interaction.guild.id];
 	let botResponse = 'Config for this server has been initialized!';
 	if (!guildConfig) {
 		guildConfig = {
@@ -59,17 +49,17 @@ const init = async interaction => {
 
 	// TODO: CHECK PERMISSIONS!!!
 	// only deal with non-global commands
-	const commandsList = getFunctionalities('commands').filter(c => !c.global);
-	const behaviors = getFunctionalities('behaviors').filter(b => !b.global);
+	const commandsList = (await getFunctionalities('commands') as CommandSetup[]).filter(c => !c.global);
+	const behaviors = (await getFunctionalities('behaviors') as CommandSetup[]).filter(b => !b.global);
 
-	applyFunctionalityOptions(commandsList, guildConfig.commands);
-	applyFunctionalityOptions(behaviors, guildConfig.commands);
-	await interaction.client.db.update(({ guilds }) => guilds[interaction.guild.id] = guildConfig);
+	applyFunctionalityOptions(commandsList, guildConfig.commands!);
+	applyFunctionalityOptions(behaviors, guildConfig.commands!);
+	await interaction.client.db.update(({ guilds }) => guilds[interaction.guild!.id] = guildConfig);
 
 	await interaction.editReply(botResponse);
 };
 
-const edit = async interaction => {
+const edit = async (interaction: ConfigInteraction) => {
 	// use validators from configOptions here
 
 	// get the guild config
@@ -79,7 +69,7 @@ const edit = async interaction => {
 	await interaction.editReply('Functionality not implemented yet');
 };
 
-const view = async interaction => {
+const view = async (interaction: ConfigInteraction) => {
 	// add a button to provide the option to edit the config?
 	await interaction.editReply('Functionality not implemented yet');
 };
@@ -90,9 +80,10 @@ const subcommandFunctions = {
 	view,
 };
 
-const execute = async interaction => {
+const execute = async (interaction: ConfigInteraction) => {
 	await interaction.deferReply({ ephemeral: true });
-	subcommandFunctions[interaction.options.getSubcommand()](interaction);
+	const subcommand = interaction.options.getSubcommand() as keyof typeof subcommandFunctions;
+	subcommandFunctions[subcommand](interaction);
 };
 /**
  * 	The config is the value of the object stored under the guildId key.

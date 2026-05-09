@@ -227,7 +227,7 @@ const autocomplete = async interaction => {
 	await interaction.respond(filtered);
 };
 
-const global = true;
+const global = false;
 const name = 'stats';
 
 export { autocomplete, data, execute, global, name };

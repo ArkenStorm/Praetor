@@ -1,8 +1,11 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import { getGuild, isValidHexCode } from '../../utils.ts';
+import { getGuild } from '../../utils.ts';
+
+const name = 'quote';
+const global = false;
 
 const data = new SlashCommandBuilder()
-	.setName('quote')
+	.setName(name)
 	.setDescription('Memorialize a quote with a fancy embed!')
 	.addStringOption(option =>
 		option.setName('who')
@@ -44,19 +47,4 @@ const execute = async interaction => {
 	await interaction.editReply('Quote recorded!');
 };
 
-const configOptions = {
-	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, etc.>, validation: <func> }
-	embedColor: {
-		type: 'Color',
-		validator: isValidHexCode,
-	},
-	channelId: {
-		type: String,
-		// validator: val => val // test if it's a valid channelId or nah?
-	},
-};
-
-const global = false;
-const name = 'quote';
-
-export { configOptions, data, execute, global, name };
+export { data, execute, global, name };
