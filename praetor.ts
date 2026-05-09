@@ -1,23 +1,12 @@
-/// <reference path="./praetor.d.ts" />
+import type { Event } from './types.ts';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js';
-import type { ClientOptions } from 'discord.js';
-import { Low } from 'lowdb';
+import { type ClientOptions, GatewayIntentBits, Partials } from 'discord.js';
 
+import { PraetorClient } from './praetorClient.ts';
 import { getFiles, getFilepaths, logError } from './utils.ts';
 import auth from './auth.json' with { type: 'json' };
-
-class PraetorClient extends Client {
-	commands: Collection<string, Command>;
-	db!: Low<any>;
-
-	constructor(options: ClientOptions) {
-		super(options);
-		this.commands = new Collection<string, Command>();
-	}
-}
 
 const clientOptions: ClientOptions = {
 	intents: [

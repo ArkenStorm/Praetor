@@ -1,7 +1,9 @@
+import type { DataFile, PraetorInteraction } from './types.ts';
+import type { PraetorClient } from './praetorClient.ts';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { EmbedBuilder, GuildMember, PermissionsBitField } from 'discord.js';
 
 const getFiles = async (dir: string): Promise<DataFile[]> => await Promise.all(
 	getFilepaths(dir).map(async (p: string) => await import(pathToFileURL(p).toString()))
@@ -25,7 +27,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const getFunctionalities = (functionality: string) => getFiles(path.join(__dirname, functionality));
 
 // general permission checking function; use permission bitfield?
-const checkPermission = (interaction, permission) => {
+const checkPermission = (interaction: PraetorInteraction, permission: keyof typeof PermissionsBitField.Flags) => {
 	if (!interaction.member) {
 		return false; // not in a guild, not allowed
 	}
@@ -33,7 +35,7 @@ const checkPermission = (interaction, permission) => {
 		console.error(`${permission} is not a valid DiscordJS permission.`);
 		return false;
 	}
-	if (interaction.member.permissionsIn(interaction.channel).has(permission)) {
+	if ((interaction.member as GuildMember).permissionsIn(interaction.channel).has(permission)) {
 		console.log('idk yet')
 	}
 }

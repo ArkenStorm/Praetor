@@ -1,3 +1,4 @@
+import type { PraetorClient } from '../praetorClient.ts';
 import { Events } from 'discord.js';
 import { startDatabase } from '../database/db.ts';
 import { logMessage } from '../utils.ts';

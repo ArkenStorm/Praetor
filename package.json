@@ -13,7 +13,8 @@
 		"deploy-global": "node deployCommands.js -g",
 		"deploy-guild": "node deployCommands.js -G",
 		"deploy-reset": "node deployCommands.js -r",
-		"dev": "node praetor.ts"
+		"dev": "node praetor.ts",
+		"lint": "oxlint ."
 	},
 	"repository": {
 		"type": "git",
@@ -37,6 +38,7 @@
 	},
 	"devDependencies": {
 		"eslint": "^9.39.1",
+		"oxlint": "^1.63.0",
 		"typescript": "^5.9.3"
 	}
 }
