@@ -12,10 +12,13 @@ interface QuoteConfig extends FunctionalityConfig {
 	channelId?: string;
 }
 
-interface ReactionBoardConfig extends FunctionalityConfig {
-	threshold?: number;
-	channelId?: string;
-	emojis?: string[];
+export interface EmojiConfig {
+	channelId: string;
+	threshold: number;
+}
+
+export interface ReactionBoardConfig extends FunctionalityConfig {
+	emojis?: Record<string, EmojiConfig>;
 	board?: Record<string, Record<string, string>>;
 }
 
