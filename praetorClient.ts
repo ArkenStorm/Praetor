@@ -1,6 +1,6 @@
+import { Client, type ClientOptions, Collection } from 'discord.js';
 import { Low } from 'lowdb';
 import type { Command, Database } from './types.ts';
-import { Client, type ClientOptions, Collection } from 'discord.js';
 
 export class PraetorClient extends Client {
 	commands: Collection<string, Command>;

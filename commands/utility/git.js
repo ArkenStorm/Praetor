@@ -1,5 +1,5 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { exec } from 'child_process';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import { logError } from '../../utils.ts';
 
 const data = new SlashCommandBuilder()
@@ -17,20 +17,14 @@ const execute = async (interaction) => {
 		return;
 	}
 	await interaction.reply({ content: 'Git process started; Praetor will be online again shortly.', ephemeral: true });
-	exec('git pull && npm install && npm run restart',
-		async error => {
-			if (error) {
-				logError(interaction.client, error, interaction);
-			}
-		});
-}
+	exec('git pull && npm install && npm run restart', async error => {
+		if (error) {
+			logError(interaction.client, error, interaction);
+		}
+	});
+};
 
 const global = false;
 const name = 'git';
 
-export {
-	data,
-	execute,
-	global,
-	name
-};
+export { data, execute, global, name };

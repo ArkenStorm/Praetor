@@ -32,7 +32,7 @@ const data = new SlashCommandBuilder()
 	)
 	.addSubcommand(subcommand =>
 		subcommand.setName('claim')
-			.setDescription('Anonymously remove an item from another user\'s list, setting yourself as the gifter.')
+			.setDescription("Anonymously remove an item from another user's list, setting yourself as the gifter.")
 			.addUserOption(option =>
 				option.setName('user')
 					.setDescription('The user whose gift list you want to claim from')
@@ -55,7 +55,7 @@ const subcommandFunctions = {
 	add,
 	remove,
 	view,
-	claim
+	claim,
 };
 
 const execute = async interaction => {
@@ -68,10 +68,4 @@ const autocomplete = async interaction => {};
 const global = false;
 const name = 'gift';
 
-export {
-	data,
-	execute,
-	autocomplete,
-	global,
-	name
-};
+export { autocomplete, data, execute, global, name };

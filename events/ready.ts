@@ -1,6 +1,6 @@
-import type { PraetorClient } from '../praetorClient.ts';
 import { Events } from 'discord.js';
 import { startDatabase } from '../database/db.ts';
+import type { PraetorClient } from '../praetorClient.ts';
 import { logMessage } from '../utils.ts';
 
 const name = Events.ClientReady;
@@ -11,10 +11,6 @@ const execute = async (client: PraetorClient) => {
 	client.db = db;
 	console.log('All systems go.');
 	logMessage(client, 'Praetor is online.');
-}
-
-export {
-	name,
-	once,
-	execute
 };
+
+export { execute, name, once };

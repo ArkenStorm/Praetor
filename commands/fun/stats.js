@@ -68,7 +68,7 @@ const track = async interaction => {
 
 	const trackedUser = await getUser(interaction);
 	if (!trackedUser) {
-		await interaction.client.db.update( ({ statistics }) => statistics[interaction.user.id] = [] );
+		await interaction.client.db.update(({ statistics }) => statistics[interaction.user.id] = []);
 	}
 
 	const user = await getUser(interaction);
@@ -76,16 +76,19 @@ const track = async interaction => {
 	let message;
 
 	if (statIsTracked) {
-		message = 'I\'m already tracking that statistic for you.';
+		message = "I'm already tracking that statistic for you.";
 	} else {
-		await interaction.client.db.update( ({ statistics }) => statistics[interaction.user.id].push({ stat, value: value || 0 }) );
+		await interaction.client.db.update(({ statistics }) =>
+			statistics[interaction.user.id].push({ stat, value: value || 0 })
+		);
 		message = `Now tracking \`${stat}\` for you.`;
 	}
 
 	await interaction.editReply({ content: message });
 };
 
-const zeroTrackingMessage = 'I\'m not currently tracking anything for you. If you\'d like to change that, try `/stats track`.';
+const zeroTrackingMessage =
+	"I'm not currently tracking anything for you. If you'd like to change that, try `/stats track`.";
 
 // Executes a predetermined function if the given stat exists in the DB
 const executeIfStatExists = async interaction => {
@@ -98,9 +101,9 @@ const executeIfStatExists = async interaction => {
 		const trackedStat = await user.find(s => s.stat === stat);
 
 		if (trackedStat) {
-			message = subcommand === 'untrack' ?
-				await untrack(interaction, user, stat) :
-				await update(interaction, user, stat, interaction.options.getNumber('value'));
+			message = subcommand === 'untrack'
+				? await untrack(interaction, user, stat)
+				: await update(interaction, user, stat, interaction.options.getNumber('value'));
 		} else {
 			message = `I'm not currently tracking \`${stat}\` for you.`;
 		}
@@ -112,7 +115,9 @@ const executeIfStatExists = async interaction => {
 };
 
 const untrack = async (interaction, user, stat) => {
-	await interaction.client.db.update( ({ statistics }) => statistics[interaction.user.id] = user.filter(s => s.stat !== stat) );
+	await interaction.client.db.update(({ statistics }) =>
+		statistics[interaction.user.id] = user.filter(s => s.stat !== stat)
+	);
 	return `No longer tracking \`${stat}\` for you.`;
 };
 
@@ -121,7 +126,7 @@ const update = async (interaction, user, stat, updateVal) => {
 		return 'You need to provide a value other than zero.';
 	}
 
-	await interaction.client.db.update( ({ statistics }) => {
+	await interaction.client.db.update(({ statistics }) => {
 		const userStats = statistics[interaction.user.id];
 		const statIndex = userStats.findIndex(s => s.stat === stat);
 		userStats[statIndex].value += updateVal;
@@ -133,7 +138,9 @@ const view = async interaction => {
 	const user = await getUser(interaction);
 
 	if (user?.length) {
-		const title = interaction.channel.isDMBased() ? 'Your statistics' : `${interaction?.member.displayName}'s statistics`;
+		const title = interaction.channel.isDMBased()
+			? 'Your statistics'
+			: `${interaction?.member.displayName}'s statistics`;
 		const fields = user.map(entry => ({ name: entry.stat, value: entry.value.toString() }));
 		fields.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -156,7 +163,7 @@ const view = async interaction => {
 
 const leaderboard = async interaction => {
 	if (!interaction.guild) {
-		await interaction.editReply('A leaderboard doesn\'t really make sense here...');
+		await interaction.editReply("A leaderboard doesn't really make sense here...");
 		return;
 	}
 	await interaction.editReply('Determining Leaderboard...');
@@ -171,20 +178,25 @@ const leaderboard = async interaction => {
 			const displayName = (await interaction.guild.members.cache.get(u.id))?.displayName;
 			(await acc).push({
 				name: displayName,
-				value: userStat.value.toString()
+				value: userStat.value.toString(),
 			});
 		}
 		return acc;
 	}, []);
 
 	competingUsers.sort((a, b) => b.value - a.value);
-	const fields = competingUsers.length ? competingUsers : [{ name: `Nobody is tracking \`${stat}\` yet!`, value: 'Maybe you can be the first...' }];
+	const fields = competingUsers.length
+		? competingUsers
+		: [{ name: `Nobody is tracking \`${stat}\` yet!`, value: 'Maybe you can be the first...' }];
 
 	const leaderboardEmbed = new EmbedBuilder()
 		.setColor('#2295d4')
 		.setTitle(`Leaderboard for ${stat}`)
 		.addFields(fields)
-		.setFooter({ text: `Requested by ${interaction.member.displayName}`, iconURL: interaction.member.displayAvatarURL() });
+		.setFooter({
+			text: `Requested by ${interaction.member.displayName}`,
+			iconURL: interaction.member.displayAvatarURL(),
+		});
 
 	await interaction.channel.send({ embeds: [leaderboardEmbed] });
 	await interaction.editReply('Leaderboard posted!');
@@ -192,10 +204,10 @@ const leaderboard = async interaction => {
 
 const subcommandFunctions = {
 	track,
-	'untrack': executeIfStatExists,
-	'update': executeIfStatExists,
+	untrack: executeIfStatExists,
+	update: executeIfStatExists,
 	view,
-	leaderboard
+	leaderboard,
 };
 
 const execute = async interaction => {
@@ -218,10 +230,4 @@ const autocomplete = async interaction => {
 const global = true;
 const name = 'stats';
 
-export {
-	data,
-	execute,
-	autocomplete,
-	global,
-	name
-};
+export { autocomplete, data, execute, global, name };

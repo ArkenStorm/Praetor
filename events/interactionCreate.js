@@ -13,8 +13,8 @@ const handleError = async (interaction, error, message = 'There was an error exe
 };
 
 const customIdCommands = {
-	'storyModal': 'story'
-}
+	storyModal: 'story',
+};
 
 const name = Events.InteractionCreate;
 const execute = async (interaction) => {
@@ -38,9 +38,6 @@ const execute = async (interaction) => {
 	} catch (error) {
 		handleError(interaction, error);
 	}
-}
-
-export {
-	name,
-	execute
 };
+
+export { execute, name };

@@ -5,16 +5,15 @@ const processAttachment = a => {
 	const mediaType = mediaLink[mediaLink.length - 1];
 	const media = /(jpg|jpeg|png|gif|webp|mov|mp4|mp3|webm|ogg|avi|mpg|mpeg|flv|wmv|flac|wav)/gi.test(mediaType);
 	return media ? a : null;
-}
+};
 
 const generateEmbed = (reaction, message): EmbedBuilder | null => {
 	let image = message.attachments.size > 0 ? processAttachment(message.attachments.first().url) : null;
-	if (!image && message.cleanContent.length === 0) { return null; } // no reaction stuff for empty messages
+	if (!image && message.cleanContent.length === 0) return null; // no reaction stuff for empty messages
 
 	if (!image && message.embeds.length > 0) {
 		image = message.embeds[0].image?.url || message.embeds[0].thumbnail?.url;
 	}
-
 
 	return new EmbedBuilder()
 		.setColor('#f1c40f')
@@ -24,68 +23,70 @@ const generateEmbed = (reaction, message): EmbedBuilder | null => {
 		.addFields(
 			{ name: `:${reaction.emoji.name}: Count`, value: `${reaction.count}`, inline: true },
 			{ name: 'Channel', value: message.channel, inline: true },
-			{ name: ':arrow_heading_up: Jump', value: `[Tally Ho!](${message.url})`, inline: true }
+			{ name: ':arrow_heading_up: Jump', value: `[Tally Ho!](${message.url})`, inline: true },
 		)
 		.setTimestamp(new Date());
-}
+};
 
 const applyReactionBoardMessage = async (reaction, config) => {
 	// do I need to fetch the reaction? is it always a partial?
 	const message = reaction.message;
 	const reactChannelId = config[reaction.emoji.name].channelId;
 	const reactChannel = await message.guild.channels.fetch(reactChannelId);
-	if (!reactChannel) { return; }
+	if (!reactChannel) return;
 
 	const embed = generateEmbed(reaction, message);
-	if (!embed) { return; }
+	if (!embed) return;
 
 	// if the message is already in the reactionBoard, edit it
 	// if the messageId is in the db, fetch it
-	const oldEmbedMessageId = reaction.client.db.data.guilds[message.guildId]?.reactionBoard?.[reaction.emoji.name]?.[message.id];
+	const oldEmbedMessageId = reaction.client.db.data.guilds[message.guildId]?.reactionBoard?.[reaction.emoji.name]
+		?.[message.id];
 	if (oldEmbedMessageId) {
 		const oldMessage = await reactChannel.message.fetch(oldEmbedMessageId);
 		if (reaction.count < config[reaction.emoji.name].threshold) {
 			await oldMessage.delete();
-			await reaction.client.db.remove(`reactionBoard[${message.guildId}][${reaction.emoji.name}][${message.id}]`).write();
+			await reaction.client.db.remove(`reactionBoard[${message.guildId}][${reaction.emoji.name}][${message.id}]`)
+				.write();
 		} else {
 			await oldMessage.edit({ embeds: [embed] });
 		}
 	} else {
 		const sentMessage = await reactChannel.send({ embeds: [embed] });
 		// key: reactedMessageId, value: reactBoardMessageId
-		await reaction.client.db.set(`reactionBoard[${message.guildId}][${reaction.emoji.name}][${message.id}]`, sentMessage.id).write();
+		await reaction.client.db.set(
+			`reactionBoard[${message.guildId}][${reaction.emoji.name}][${message.id}]`,
+			sentMessage.id,
+		).write();
 	}
-}
+};
 
 const execute = async reaction => {
 	const config = reaction.client.db.data.guilds[reaction.message.guildId]?.reactionBoard;
-	if (!config.enabled ||
-		!reaction.emoji.name in config.emojis ||
-		reaction.count < config[reaction.emoji.name].threshold) { return; }
+	if (
+		!config.enabled
+		|| (!reaction.emoji.name) in config.emojis
+		|| reaction.count < config[reaction.emoji.name].threshold
+	) return;
 	applyReactionBoardMessage(reaction, config);
-}
+};
 
 const configOptions = {
 	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, etc.>, validation: <func> }
 	threshold: {
 		type: Number,
-		validator: val => val > 1
+		validator: val => val > 1,
 	},
 	channelId: {
-		type: String
+		type: String,
 		// validator: val => val // test if it's a valid channelId or nah?
 	},
 	emojis: {
-		type: Array
-	}
-}
+		type: Array,
+	},
+};
 
 const global = false;
 const name = 'reactionBoard';
 
-export {
-	execute,
-	configOptions,
-	global,
-	name
-};
+export { configOptions, execute, global, name };

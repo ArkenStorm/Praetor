@@ -1,12 +1,12 @@
-import type { Event } from './types.ts';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import type { Event } from './types.ts';
 
 import { type ClientOptions, GatewayIntentBits, Partials } from 'discord.js';
 
-import { PraetorClient } from './praetorClient.ts';
-import { getFiles, getFilepaths, logError } from './utils.ts';
 import auth from './auth.json' with { type: 'json' };
+import { PraetorClient } from './praetorClient.ts';
+import { getFilepaths, getFiles, logError } from './utils.ts';
 
 const clientOptions: ClientOptions = {
 	intents: [
@@ -28,9 +28,9 @@ const clientOptions: ClientOptions = {
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildScheduledEvents,
 		GatewayIntentBits.AutoModerationConfiguration,
-		GatewayIntentBits.AutoModerationExecution
+		GatewayIntentBits.AutoModerationExecution,
 	],
-	partials: [Partials.Message, Partials.Channel, Partials.Reaction]
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 };
 
 const client = new PraetorClient(clientOptions);

@@ -33,10 +33,4 @@ const configOptions = {
 const global = false;
 const name = 'role';
 
-export {
-	data,
-	execute,
-	configOptions,
-	global,
-	name
-};
+export { configOptions, data, execute, global, name };

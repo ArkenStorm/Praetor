@@ -1,13 +1,14 @@
-import type { DataFile, PraetorInteraction } from './types.ts';
-import type { PraetorClient } from './praetorClient.ts';
+import { EmbedBuilder, GuildMember, PermissionsBitField } from 'discord.js';
 import { type PathLike, readdirSync } from 'fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { EmbedBuilder, GuildMember, PermissionsBitField } from 'discord.js';
+import type { PraetorClient } from './praetorClient.ts';
+import type { DataFile, PraetorInteraction } from './types.ts';
 
-const getFiles = async (dir: PathLike): Promise<DataFile[]> => await Promise.all(
-	getFilepaths(dir).map(async (p: PathLike) => await import(pathToFileURL(p.toString()).toString()))
-);
+const getFiles = async (dir: PathLike): Promise<DataFile[]> =>
+	await Promise.all(
+		getFilepaths(dir).map(async (p: PathLike) => await import(pathToFileURL(p.toString()).toString())),
+	);
 
 const getFilepaths = (dir: PathLike) => {
 	const files = readdirSync(dir, { withFileTypes: true });
@@ -36,9 +37,9 @@ const checkPermission = (interaction: PraetorInteraction, permission: keyof type
 		return false;
 	}
 	if ((interaction.member as GuildMember).permissionsIn(interaction.channel).has(permission)) {
-		console.log('idk yet')
+		console.log('idk yet');
 	}
-}
+};
 
 // always allow my user id
 // fp.split('/').at(-1).slice(0, -3); // for file names
@@ -55,14 +56,14 @@ const logError = (client: PraetorClient, err: Error, interaction?: PraetorIntera
 			{
 				name: 'Guilty User:',
 				value: (
-					'displayName' in interaction.member ?
-					interaction.member.displayName :
-					interaction.member?.nick
-				) || interaction.user.username
+					'displayName' in interaction.member
+						? interaction.member.displayName
+						: interaction.member?.nick
+				) || interaction.user.username,
 			},
 			{ name: 'Channel:', value: interaction.channel.name },
 			{ name: 'Guild:', value: interaction.guild.name || 'DM' },
-			{ name: 'Created At:', value: createTimecode(interaction.createdTimestamp, 'datetime') }
+			{ name: 'Created At:', value: createTimecode(interaction.createdTimestamp, 'datetime') },
 		);
 	}
 	fields.push({ name: 'Error:', value: err.stack || err });
@@ -94,30 +95,22 @@ const logMessage = async (client: PraetorClient, message: string) => {
 
 // function to create a timecode
 const timecodeFormats = {
-	'date': 'd',
-	'longdate': 'D',
-	'time': 't',
-	'longtime': 'T', // with seconds
-	'datetime': 'f',
-	'longdatetime': 'F',
-	'dynamic': 'R'
+	date: 'd',
+	longdate: 'D',
+	time: 't',
+	longtime: 'T', // with seconds
+	datetime: 'f',
+	longdatetime: 'F',
+	dynamic: 'R',
 };
 
 type TimecodeFormat = keyof typeof timecodeFormats;
 
-const createTimecode = (timestamp: number, format: TimecodeFormat) => `<t:${Math.floor(timestamp / 1000)}:${timecodeFormats[format]}>`;
+const createTimecode = (timestamp: number, format: TimecodeFormat) =>
+	`<t:${Math.floor(timestamp / 1000)}:${timecodeFormats[format]}>`;
 const isValidHexCode = (str: string) => /^#[0-9A-F]{6}$/i.test(str);
 
 // instead of interaction, destructure the client from a generic object? It would only work with things that have a client property, but that's fine
 const getGuild = async (interaction: PraetorInteraction) => interaction.client.db.data.guilds[interaction.guildId];
 
-export {
-	getFiles,
-	getFilepaths,
-	getFunctionalities,
-	logError,
-	logMessage,
-	createTimecode,
-	isValidHexCode,
-	getGuild
-};
+export { createTimecode, getFilepaths, getFiles, getFunctionalities, getGuild, isValidHexCode, logError, logMessage };

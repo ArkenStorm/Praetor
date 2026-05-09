@@ -1,5 +1,9 @@
 {
   "typescript": {
+    "indentWidth": 4,
+    "useTabs": true,
+    "quoteStyle": "preferSingle",
+    "quoteProps": "asNeeded"
   },
   "json": {
   },

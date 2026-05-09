@@ -9,7 +9,7 @@ export interface StatEntry {
 export interface GuildConfig {
 	defaults: { embedColor: string };
 	reactionBoard?: Record<string, Record<string, string>>;
-	[key: string]: unknown;
+	[key: string]: unknown; // Should I update this with all the config types?
 }
 
 export interface Database {

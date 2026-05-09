@@ -1,15 +1,14 @@
-import path from 'node:path';
 import { REST, Routes } from 'discord.js';
+import path from 'node:path';
 
-import { getFiles } from './utils.ts';
 import { startDatabase } from './database/db.js';
+import { getFiles } from './utils.ts';
 
 import authConfig from './auth.json' with { type: 'json' };
 const { clientId, token } = authConfig;
 
 const arkchatGuildId = '383889230704803851';
 // does clientId need to be dynamic with sharding?
-
 
 const cliArgs = process.argv.slice(2);
 const getCommandDetails = async () => {
@@ -31,7 +30,9 @@ const getCommandDetails = async () => {
 		guildId = cliArgs[flagIndex + 1];
 		const guildConfig = db.data.guilds[guildId];
 		if (!guildConfig) {
-			console.log('That server does not have a configuration set up. You must initialize the configuration and choose which commands to use in that server.');
+			console.log(
+				'That server does not have a configuration set up. You must initialize the configuration and choose which commands to use in that server.',
+			);
 			return ({ route: null, commands: null });
 		}
 		commandFiles.filter(cf => !cf.global)
@@ -51,13 +52,13 @@ const getCommandDetails = async () => {
 		guildId = arkchatGuildId;
 	}
 
-	const route = guildId ?
-		Routes.applicationGuildCommands(clientId, guildId) :
-		Routes.applicationCommands(clientId);
+	const route = guildId
+		? Routes.applicationGuildCommands(clientId, guildId)
+		: Routes.applicationCommands(clientId);
 
 	return {
 		commands,
-		route
+		route,
 	};
 };
 
@@ -73,7 +74,7 @@ const getCommandDetails = async () => {
  * 		effect: resets Arkchat guild-specific commands
  */
 const rest = new REST({ version: '10' }).setToken(token);
-export const loadCommands = (async () => {
+export const loadCommands = async () => {
 	const { route, commands } = await getCommandDetails();
 	if (!route || !commands) {
 		return;
@@ -82,13 +83,13 @@ export const loadCommands = (async () => {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 		const data = await rest.put(
 			route,
-			{ body: commands }
+			{ body: commands },
 		) as Array<any>;
 
 		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
 		console.error(error);
 	}
-});
+};
 
 loadCommands();

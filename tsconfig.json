@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-	"module": "nodenext",
-	"target": "es2024",
-	"moduleResolution": "nodenext",
-	"esModuleInterop": true,
-	"forceConsistentCasingInFileNames": true,
-	"allowImportingTsExtensions": true,
-	"noEmit": true
+    "module": "nodenext",
+    "target": "es2024",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": ["./**/*.ts", "./**/*.d.ts"]
 }

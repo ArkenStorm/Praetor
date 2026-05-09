@@ -48,21 +48,15 @@ const configOptions = {
 	// <option i.e. 'embedColor'> -> { type: <Type i.e. String, Boolean, Color, etc.>, validation: <func> }
 	embedColor: {
 		type: 'Color',
-		validator: isValidHexCode
+		validator: isValidHexCode,
 	},
 	channelId: {
-		type: String
+		type: String,
 		// validator: val => val // test if it's a valid channelId or nah?
-	}
+	},
 };
 
 const global = false;
 const name = 'quote';
 
-export {
-	data,
-	execute,
-	configOptions,
-	global,
-	name
-};
+export { configOptions, data, execute, global, name };

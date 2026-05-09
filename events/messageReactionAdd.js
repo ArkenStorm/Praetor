@@ -14,9 +14,6 @@ const execute = async (reaction) => {
 	} else {
 		reactionBoardExecute(reaction);
 	}
-}
-
-export {
-	name,
-	execute
 };
+
+export { execute, name };

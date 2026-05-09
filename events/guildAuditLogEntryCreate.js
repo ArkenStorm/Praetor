@@ -17,9 +17,6 @@ const execute = async (auditLog) => {
 	} catch (error) {
 		handleError(interaction, error);
 	}
-}
-
-export {
-	name,
-	execute
 };
+
+export { execute, name };

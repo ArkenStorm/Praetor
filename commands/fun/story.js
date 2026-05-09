@@ -1,4 +1,11 @@
-import { ActionRowBuilder, EmbedBuilder, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import {
+	ActionRowBuilder,
+	EmbedBuilder,
+	ModalBuilder,
+	SlashCommandBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+} from 'discord.js';
 import { getGuild } from '../../utils.ts';
 
 const data = new SlashCommandBuilder()
@@ -59,10 +66,4 @@ const onSubmit = async interaction => {
 const global = false;
 const name = 'story';
 
-export {
-	data,
-	execute,
-	onSubmit,
-	global,
-	name
-};
+export { data, execute, global, name, onSubmit };

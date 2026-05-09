@@ -3,18 +3,18 @@ import { getFunctionalities } from '../../utils.ts';
 
 const data = new SlashCommandBuilder()
 	.setName('config')
-	.setDescription('Manage your server\'s config')
+	.setDescription("Manage your server's config")
 	.addSubcommand(subcommand =>
 		subcommand.setName('init')
-			.setDescription('Initialize your server\'s config') // will start a lengthy process
+			.setDescription("Initialize your server's config") // will start a lengthy process
 	)
 	.addSubcommand(subcommand =>
 		subcommand.setName('edit')
-			.setDescription('Edit your server\'s config') // have a list of all command names
+			.setDescription("Edit your server's config") // have a list of all command names
 	)
 	.addSubcommand(subcommand =>
 		subcommand.setName('view')
-			.setDescription('View your server\'s config')
+			.setDescription("View your server's config")
 	);
 
 // the heck are overrides for?!
@@ -25,15 +25,15 @@ const defaultOptions = {
 	minCount: 5,
 	overrides: {},
 	onlyUseOverrides: true,
-	emojis: ['star']
+	emojis: ['star'],
 };
 
 // Requires every command/behavior to have a name
 const applyFunctionalityOptions = (functionalities, config) => {
 	functionalities.forEach(f => {
-		const options = f.configOptions ?
-			Object.keys(f.configOptions).reduce((acc, key) => acc[key] = defaultOptions[key], {}) :
-			{};
+		const options = f.configOptions
+			? Object.keys(f.configOptions).reduce((acc, key) => acc[key] = defaultOptions[key], {})
+			: {};
 		if (!config[f.name]) { // only initialize if it doesn't exist already
 			config[f.name] = Object.assign({ enabled: false }, options);
 		}
@@ -49,8 +49,8 @@ const init = async interaction => {
 	let botResponse = 'Config for this server has been initialized!';
 	if (!guildConfig) {
 		guildConfig = {
-			defaults: { embedColor: '#2295d4' }
-		}
+			defaults: { embedColor: '#2295d4' },
+		};
 	} else {
 		botResponse = 'Config updated with new defaults!';
 	}
@@ -62,7 +62,7 @@ const init = async interaction => {
 
 	applyFunctionalityOptions(commands, guildConfig);
 	applyFunctionalityOptions(behaviors, guildConfig);
-	await interaction.client.db.update( ({ guilds }) => guilds[interaction.guild.id] = guildConfig );
+	await interaction.client.db.update(({ guilds }) => guilds[interaction.guild.id] = guildConfig);
 
 	await interaction.editReply(botResponse);
 };
@@ -80,12 +80,12 @@ const edit = async interaction => {
 const view = async interaction => {
 	// add a button to provide the option to edit the config?
 	await interaction.editReply('Functionality not implemented yet');
-}
+};
 
 const subcommandFunctions = {
 	init,
 	edit,
-	view
+	view,
 };
 
 const execute = async interaction => {
@@ -108,9 +108,4 @@ const execute = async interaction => {
 const global = true;
 const name = 'config';
 
-export {
-	data,
-	execute,
-	global,
-	name
-};
+export { data, execute, global, name };
