@@ -1,4 +1,4 @@
-import { PathLike } from 'fs';
+import type { PathLike } from 'fs';
 import { JSONFilePreset } from 'lowdb/node';
 
 export const startDatabase = async (path: PathLike) => {
