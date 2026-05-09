@@ -40,7 +40,8 @@ const applyReactionBoardMessage = async (reaction, config) => {
 
 	// if the message is already in the reactionBoard, edit it
 	// if the messageId is in the db, fetch it
-	const oldEmbedMessageId = reaction.client.db.data.guilds[message.guildId]?.reactionBoard?.[reaction.emoji.name]
+	const oldEmbedMessageId = reaction.client.db.data.guilds[message.guildId]?.commands?.reactionBoard?.board
+		?.[reaction.emoji.name]
 		?.[message.id];
 	if (oldEmbedMessageId) {
 		const oldMessage = await reactChannel.message.fetch(oldEmbedMessageId);
@@ -62,7 +63,7 @@ const applyReactionBoardMessage = async (reaction, config) => {
 };
 
 const execute = async reaction => {
-	const config = reaction.client.db.data.guilds[reaction.message.guildId]?.reactionBoard;
+	const config = reaction.client.db.data.guilds[reaction.message.guildId]?.commands?.reactionBoard;
 	if (
 		!config.enabled
 		|| (!reaction.emoji.name) in config.emojis

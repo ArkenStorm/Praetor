@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { ARKEN_ASYLUM_ERROR_CHANNEL_ID, ARKEN_ASYLUM_GUILD_ID } from './constants/arken.ts';
 import type { PraetorClient } from './praetorClient.ts';
-import type { DataFile, PraetorInteraction } from './types.ts';
+import type { DataFile, PraetorInteraction } from './types/command.type.ts';
 
 export const getFiles = async (dir: PathLike): Promise<DataFile[]> =>
 	await Promise.all(

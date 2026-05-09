@@ -29,13 +29,13 @@ const defaultOptions = {
 };
 
 // Requires every command/behavior to have a name
-const applyFunctionalityOptions = (functionalities, config) => {
+const applyFunctionalityOptions = (functionalities, commands) => {
 	functionalities.forEach(f => {
 		const options = f.configOptions
 			? Object.keys(f.configOptions).reduce((acc, key) => acc[key] = defaultOptions[key], {})
 			: {};
-		if (!config[f.name]) { // only initialize if it doesn't exist already
-			config[f.name] = Object.assign({ enabled: false }, options);
+		if (!commands[f.name]) { // only initialize if it doesn't exist already
+			commands[f.name] = Object.assign({ enabled: false }, options);
 		}
 	});
 };
@@ -50,18 +50,20 @@ const init = async interaction => {
 	if (!guildConfig) {
 		guildConfig = {
 			defaults: { embedColor: '#2295d4' },
+			commands: {},
 		};
 	} else {
+		guildConfig.commands ??= {};
 		botResponse = 'Config updated with new defaults!';
 	}
 
 	// TODO: CHECK PERMISSIONS!!!
 	// only deal with non-global commands
-	const commands = getFunctionalities('commands').filter(c => !c.global);
+	const commandsList = getFunctionalities('commands').filter(c => !c.global);
 	const behaviors = getFunctionalities('behaviors').filter(b => !b.global);
 
-	applyFunctionalityOptions(commands, guildConfig);
-	applyFunctionalityOptions(behaviors, guildConfig);
+	applyFunctionalityOptions(commandsList, guildConfig.commands);
+	applyFunctionalityOptions(behaviors, guildConfig.commands);
 	await interaction.client.db.update(({ guilds }) => guilds[interaction.guild.id] = guildConfig);
 
 	await interaction.editReply(botResponse);
@@ -93,14 +95,18 @@ const execute = async interaction => {
 	subcommandFunctions[interaction.options.getSubcommand()](interaction);
 };
 /**
- * 	config = {
+ * 	The config is the value of the object stored under the guildId key.
+ *
+ *  config = {
  * 		defaults: {
  * 			embedColor: #ffffff
  * 		},
- * 		<Functionality (command/behavior/etc.)>: {
- * 			enabled: true,
- * 			embedColor: #123456, // if applicable
- * 			channelId: "8345702836578", // if applicable
+ * 		commands: {
+ * 			<Functionality (command/behavior/etc.)>: {
+ * 				enabled: true,
+ * 				embedColor: #123456, // if applicable
+ * 				channelId: "8345702836578", // if applicable
+ * 			}
  * 		}
  * 	}
  */

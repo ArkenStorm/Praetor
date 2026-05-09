@@ -41,9 +41,9 @@ const data = new SlashCommandBuilder()
 
 const add = async interaction => {
 	const guild = await getGuild(interaction);
-	if (!guild?.config?.tag?.enabled) return;
+	if (!guild?.commands?.tag?.enabled) return;
 
-	const addedTags = guild.config.tag.tags;
+	const addedTags = guild.commands.tag.tags;
 	const tags = addedTags || {};
 
 	const tagName = interaction.options.getString('name');

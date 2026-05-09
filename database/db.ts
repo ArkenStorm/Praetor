@@ -1,6 +1,6 @@
 import type { PathLike } from 'fs';
 import { JSONFilePreset } from 'lowdb/node';
-import type { Database } from '../types.ts';
+import type { Database } from '../types/db.type.ts';
 
 export const startDatabase = async (path: PathLike) => {
 	const defaultData: Database = {

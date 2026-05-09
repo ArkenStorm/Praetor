@@ -1,25 +1,25 @@
 import { REST, Routes } from 'discord.js';
 import path from 'node:path';
+import { ARKEN_ASYLUM_GUILD_ID } from './constants/arken.ts';
+import type { Command } from './types/command.type.ts';
+import type { GuildConfig } from './types/db.type.ts';
 
 import { startDatabase } from './database/db.js';
 import { getFiles } from './utils.ts';
 
 import authConfig from './auth.json' with { type: 'json' };
-const { clientId, token } = authConfig;
-
-const arkchatGuildId = '383889230704803851';
-// does clientId need to be dynamic with sharding?
+const { clientId, token } = authConfig; // does clientId need to be dynamic with sharding?
 
 const cliArgs = process.argv.slice(2);
 const getCommandDetails = async () => {
-	const commands = [];
+	const commands: ReturnType<Command['data']['toJSON']>[] = [];
 	const baseCommandPath = path.join(__dirname, 'commands');
 	const commandFiles = await getFiles(baseCommandPath) as Command[];
 	let guildId = '';
 	const deployGlobally = cliArgs.includes('-g') || cliArgs.includes('--global');
 
 	if (cliArgs.includes('-r') || cliArgs.includes('--reset')) {
-		guildId = arkchatGuildId;
+		guildId = ARKEN_ASYLUM_GUILD_ID;
 	} else if (cliArgs.includes('-G') || cliArgs.includes('--guild')) {
 		const db = await startDatabase('./database/db.json');
 
@@ -37,7 +37,9 @@ const getCommandDetails = async () => {
 		}
 		commandFiles.filter(cf => !cf.global)
 			.reduce((acc, command) => {
-				if (guildConfig[command.name].enabled) {
+				const commandsConfig = guildConfig.commands;
+				const key = command.name as keyof NonNullable<GuildConfig['commands']>;
+				if (commandsConfig?.[key]?.enabled) {
 					acc.push(command.data.toJSON());
 				}
 				return acc;
@@ -49,7 +51,7 @@ const getCommandDetails = async () => {
 			}
 			return acc;
 		}, commands);
-		guildId = arkchatGuildId;
+		guildId = ARKEN_ASYLUM_GUILD_ID;
 	}
 
 	const route = guildId
