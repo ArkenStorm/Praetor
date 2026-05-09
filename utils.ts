@@ -1,18 +1,18 @@
 import type { DataFile, PraetorInteraction } from './types.ts';
 import type { PraetorClient } from './praetorClient.ts';
-import fs from 'node:fs';
+import { type PathLike, readdirSync } from 'fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EmbedBuilder, GuildMember, PermissionsBitField } from 'discord.js';
 
-const getFiles = async (dir: string): Promise<DataFile[]> => await Promise.all(
-	getFilepaths(dir).map(async (p: string) => await import(pathToFileURL(p).toString()))
+const getFiles = async (dir: PathLike): Promise<DataFile[]> => await Promise.all(
+	getFilepaths(dir).map(async (p: PathLike) => await import(pathToFileURL(p.toString()).toString()))
 );
 
-const getFilepaths = (dir: string) => {
-	const files = fs.readdirSync(dir, { withFileTypes: true });
+const getFilepaths = (dir: PathLike) => {
+	const files = readdirSync(dir, { withFileTypes: true });
 	const paths = files.map(file => {
-		const filepath = path.join(dir, file.name);
+		const filepath = path.join(dir.toString(), file.name);
 		if (file.isDirectory()) {
 			return getFilepaths(filepath);
 		}
